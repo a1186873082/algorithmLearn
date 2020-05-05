@@ -454,6 +454,33 @@ public class LeetCodeSolution {
         return new StringBuffer(s.substring(i)).reverse() + shortestPalindrome(s.substring(0, i)) + s.substring(i);
     }
 
+    /**
+     * Definition for a binary tree node.
+     * 验证二叉搜索树
+     *
+     * 采用中序遍历验证，因为中序遍历 为 左中右，二叉搜索树必须为左<中<右
+     */
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(int x) { val = x; }
+    }
+    long pre = Integer.MIN_VALUE;
+    public boolean isValidBST(TreeNode root) {
+
+        if(root == null){
+            return true;
+        }
+        if(!isValidBST(root.left)){
+            return false;
+        }
+        if(root.val <= pre){
+            return false;
+        }
+        pre = root.val;
+        return isValidBST(root.right);
+    }
 
     public static void main(String[] args) {
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
