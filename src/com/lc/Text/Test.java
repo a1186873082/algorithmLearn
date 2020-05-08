@@ -1,5 +1,7 @@
 package com.lc.Text;
 
+import javax.xml.soap.Node;
+
 public class Test {
 
     private static String v1;

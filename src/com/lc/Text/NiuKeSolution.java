@@ -1,7 +1,11 @@
 package com.lc.Text;
 
+import sun.reflect.generics.tree.Tree;
+
+import javax.xml.soap.Node;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Collectors;
 
 public class NiuKeSolution {
@@ -365,11 +369,11 @@ public class NiuKeSolution {
      */
 
     public static class TreeNode {
-        int val = 0;
+        Integer val = 0;
         TreeNode left = null;
         TreeNode right = null;
 
-        public TreeNode(int val) {
+        public TreeNode(Integer val) {
             this.val = val;
 
         }
@@ -855,6 +859,12 @@ public class NiuKeSolution {
         return pyramid[0][0];
     }
 
+    /**
+     * 前序遍历创建二叉树
+     *
+     * @param inputList
+     * @return
+     */
     public static TreeNode createTreeNode(LinkedList<Integer> inputList) {
         if (inputList == null || inputList.size() == 0) {
             return null;
@@ -870,6 +880,48 @@ public class NiuKeSolution {
     }
 
     /**
+     * 层次顺序创建二叉树
+     */
+    public static TreeNode levelCreateTreeNode(LinkedList<Integer> inputList) {
+        TreeNode treeNode = new TreeNode(inputList.get(0));
+        TreeNode returnNode = treeNode;
+        Queue<TreeNode> queue = new LinkedList();
+        int i = 0;
+        while (treeNode != null) {
+            if ((2 * i + 1) < inputList.size()) {
+                treeNode.left = new TreeNode(inputList.get(2 * i + 1));
+                queue.add(treeNode.left);
+            }
+
+            if ((2 * i + 2) < inputList.size()) {
+                treeNode.right = new TreeNode(inputList.get(2 * i + 2));
+                queue.add(treeNode.right);
+            }
+
+            treeNode = queue.poll();
+            i++;
+        }
+        return returnNode;
+    }
+
+    public static void printLevelTree(TreeNode treeNode){
+        LinkedList<TreeNode> linkedList = new LinkedList();
+        linkedList.add(treeNode);
+        TreeNode temp = null;
+        while (!linkedList.isEmpty()){
+            temp = linkedList.peek();
+            System.out.println(temp.val);
+            if(temp.left != null){
+                linkedList.add(temp.left);
+            }
+            if(temp.right != null){
+                linkedList.add(temp.right);
+            }
+            linkedList.removeFirst();
+        }
+    }
+
+    /**
      * 前序遍历
      *
      * @param treeNode
@@ -881,6 +933,19 @@ public class NiuKeSolution {
         System.out.println(treeNode.val);
         preTraverse(treeNode.left);
         preTraverse(treeNode.right);
+    }
+
+    public static void twoTree(TreeNode treeNode) {
+        if (treeNode == null) {
+            return;
+        }
+        TreeNode temp = treeNode.left;
+        treeNode.left = treeNode.right;
+        treeNode.right = temp;
+
+        twoTree(treeNode.left);
+        System.out.println(treeNode.val);
+        twoTree(treeNode.right);
     }
 
     public static void inTraverse(TreeNode treeNode) {
@@ -943,14 +1008,15 @@ public class NiuKeSolution {
     }
 
 
-    public static void main(String[] args) throws Exception{
-//        LinkedList<Integer> inputList = new LinkedList<>(
-//                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
-//        TreeNode root = createTreeNode(inputList);
+    public static void main(String[] args) throws Exception {
+        LinkedList<Integer> inputList = new LinkedList<>(
+                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
+        TreeNode root = levelCreateTreeNode(inputList);
+//        twoTree(root);
 //        System.out.println("前序");
 //        nonRecursionPrevTraverse(root);
 //        System.out.println("中序");
-//        nonRecursionInTraverse(root);
+        printLevelTree(root);
 //        Long s = System.currentTimeMillis();
 //        String str = "tiapwqirjasjfasjfasifjvjzxvuzxvjxznvnsjsafasnfasjvxvasfnasjfasfhhzxvuzxvxznvzxggggggxxxxxxxxxxxxxxxccccccccccvasaaaaaaaaagdetwewqrwqoiuroiuyerpyfbnx,bmcvxn,blkjdafsf";
 //        Set setText2 = new HashSet<>(Arrays.asList(
@@ -958,11 +1024,11 @@ public class NiuKeSolution {
 //        System.out.println(System.currentTimeMillis()-s + ":" + setText2);
 
 
-        Long s1 = System.currentTimeMillis();
-        String str2 = "tiapwqirjasjfasjfasifjvjzxvuzxvjxznvnsjsafasnfasjvxvasfnasjfasfhhzxvuzxvxznvzxggggggxxxxxxxxxxxxxxxccccccccccvasaaaaaaaaagdetwewqrwqoiuroiuyerpyfbnx,bmcvxn,blkjdafsf";
-        Set setText = new HashSet<>(Arrays.asList(
-                str2.split(""))).stream().map(p -> p.toUpperCase()).collect(Collectors.toSet());
-        System.out.println(System.currentTimeMillis()-s1 + ":" + setText);
+//        Long s1 = System.currentTimeMillis();
+//        String str2 = "tiapwqirjasjfasjfasifjvjzxvuzxvjxznvnsjsafasnfasjvxvasfnasjfasfhhzxvuzxvxznvzxggggggxxxxxxxxxxxxxxxccccccccccvasaaaaaaaaagdetwewqrwqoiuroiuyerpyfbnx,bmcvxn,blkjdafsf";
+//        Set setText = new HashSet<>(Arrays.asList(
+//                str2.split(""))).stream().map(p -> p.toUpperCase()).collect(Collectors.toSet());
+//        System.out.println(System.currentTimeMillis()-s1 + ":" + setText);
     }
 
 }
