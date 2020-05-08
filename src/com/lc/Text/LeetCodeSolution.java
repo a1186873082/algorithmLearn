@@ -2,6 +2,11 @@ package com.lc.Text;
 
 import com.sun.deploy.util.StringUtils;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 public class LeetCodeSolution {
     /**
      * 整数反转-----------------------------
@@ -111,10 +116,10 @@ public class LeetCodeSolution {
         int count = k;
         int returnValue = 0;
         for (int num : nums) {
-            if (isjishu(num)){
+            if (isjishu(num)) {
                 count--;
             }
-            if(count == 0){
+            if (count == 0) {
                 count = k;
                 returnValue++;
             }
@@ -197,13 +202,12 @@ public class LeetCodeSolution {
     /**
      * ===============================================================
      * 由 n 个连接的字符串 s 组成字符串 S，记作 S = [s,n]。例如，["abc",3]=“abcabcabc”。
-     *
+     * <p>
      * 如果我们可以从 s2 中删除某些字符使其变为 s1，则称字符串 s1 可以从字符串 s2 获得。例如，根据定义，"abc" 可以从 “abdbec” 获得，但不能从 “acbbe” 获得。
-     *
+     * <p>
      * 现在给你两个非空字符串 s1 和 s2（每个最多 100 个字符长）和两个整数 0 ≤ n1 ≤ 106 和 1 ≤ n2 ≤ 106。现在考虑字符串 S1 和 S2，其中 S1=[s1,n1] 、S2=[s2,n2] 。
-     *
+     * <p>
      * 请你找出一个可以满足使[S2,M] 从 S1 获得的最大整数 M 。
-     *
      */
     public int getMaxRepetitions3(String s1, int n1, String s2, int n2) {
         char[] s1Chars = s1.toCharArray();
@@ -226,7 +230,6 @@ public class LeetCodeSolution {
 
     /**
      * 寻找循环体解法
-     *
      */
     public int getMaxRepetitions2(String s1, int n1, String s2, int n2) {
         char[] s1Chars = s1.toCharArray();
@@ -363,7 +366,6 @@ public class LeetCodeSolution {
     /**
      * 求出字符串中的最大回文子串
      * 中心往两边扩展法进行处理
-     *
      */
     public String longestPalindrome(String s) {
         int n = s.length();
@@ -448,7 +450,7 @@ public class LeetCodeSolution {
                 j--;
             }
         }
-        if(i == s.length()){
+        if (i == s.length()) {
             return s;
         }
         return new StringBuffer(s.substring(i)).reverse() + shortestPalindrome(s.substring(0, i)) + s.substring(i);
@@ -457,32 +459,119 @@ public class LeetCodeSolution {
     /**
      * Definition for a binary tree node.
      * 验证二叉搜索树
-     *
+     * <p>
      * 采用中序遍历验证，因为中序遍历 为 左中右，二叉搜索树必须为左<中<右
      */
-    public class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-        TreeNode(int x) { val = x; }
-    }
+//    public class TreeNode {
+//        int val;
+//        TreeNode left;
+//        TreeNode right;
+//        TreeNode(int x) { val = x; }
+//    }
     long pre = Integer.MIN_VALUE;
+
     public boolean isValidBST(TreeNode root) {
 
-        if(root == null){
+        if (root == null) {
             return true;
         }
-        if(!isValidBST(root.left)){
+        if (!isValidBST(root.left)) {
             return false;
         }
-        if(root.val <= pre){
+        if (root.val <= pre) {
             return false;
         }
         pre = root.val;
         return isValidBST(root.right);
     }
 
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        if (s == null) {
+            return false;
+        }
+        if (judgeSubtree(s, t)) {
+            return true;
+        } else {
+            return isSubtree(s.left, t) || isSubtree(s.right, t);
+        }
+    }
+
+    public boolean judgeSubtree(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.val == t.val) {
+            if (judgeSubtree(s.left, t.left)) {
+                return judgeSubtree(s.right, t.right);
+            }
+            return false;
+        }
+        return false;
+
+    }
+
+//    public TreeNode createNode(LinkedList<Integer> nodeList) {
+//        if (nodeList == null || nodeList.size() == 0) {
+//            return null;
+//        }
+//        Integer data = nodeList.removeFirst();
+//        TreeNode treeNode = null;
+//        if (data != null) {
+//            treeNode = new TreeNode(data);
+//            treeNode.left = createNode(nodeList);
+//            treeNode.right = createNode(nodeList);
+//        }
+//        return treeNode;
+//    }
+
+    //按层级从上到下转换为树
+    public TreeNode createNode(LinkedList<Integer> nodeList) {
+        TreeNode p = new TreeNode(nodeList.get(0));
+        TreeNode returnNode = p;
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        int i=0;
+        while (p!=null){
+            if(2*i+1<nodeList.size()){
+                p.left = new TreeNode(nodeList.get(2*i+1));
+                queue.add(p.left);
+            }
+            if (2*i+2<nodeList.size()){
+                p.right = new TreeNode(nodeList.get(2*i+2));
+                queue.add(p.right);
+            }
+            p = queue.poll();
+            i++;
+        }
+        return returnNode;
+    }
+
     public static void main(String[] args) {
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
+        TreeNode s = new LeetCodeSolution().createNode(new LinkedList<Integer>(Arrays.asList(new Integer[]{3, 4, 5, 1, 2})));
+        TreeNode t = new LeetCodeSolution().createNode(new LinkedList<Integer>(Arrays.asList(new Integer[]{4, 1, 2})));
+        System.out.println(new LeetCodeSolution().isSubtree(s, t));
     }
 }
