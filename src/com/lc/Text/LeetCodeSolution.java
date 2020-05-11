@@ -570,6 +570,8 @@ public class LeetCodeSolution {
 
     /**
      * 暴力法
+     * <p>
+     * 实现 pow(x, n) ，即计算 x 的 n 次幂函数。
      *
      * @param x
      * @param n
@@ -599,39 +601,17 @@ public class LeetCodeSolution {
     /**
      * 求出最大的基准数(比如2的6次方=4的3次方,   3的4次方=9的平方)
      */
-    public double myPow1(double x, int n) {
-        if (x == 0) {
-            return 0;
-        }
-        if (n == 0 || x == 1) {
-            return 1;
-        }
-        boolean flag = n > 0 ? true : false;
-        if (!flag) {
-            n = -n;
-        }
-        int yushu = 2;
+    public double myPow1(double x, long n) {
         double jishu = x;
-        double temp;
-        while (yushu <= 9) {
-            if (n % yushu != 0) {
-                yushu++;
-            } else {
-                temp = jishu;
-                for (int i = 1; i < yushu; i++) {
-                    jishu = jishu * temp;
-                }
-                n = n / yushu;
+        double ans = 1.0;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans *= jishu;
             }
+            jishu *= jishu;
+            n /= 2;
         }
-        temp = jishu;
-        for (int i = 1; i < n; i++) {
-            jishu = jishu * temp;
-        }
-        if (!flag) {
-            jishu = 1 / jishu;
-        }
-        return jishu;
+        return ans;
     }
 
     /**
@@ -639,7 +619,8 @@ public class LeetCodeSolution {
      * x3 = y2*x
      */
     public double myPow2(double x, int n) {
-        return n > 0 ? quick(x, n) : 1 / quick(x, -n);
+        long N = n;
+        return N > 0 ? myPow1(x, N) : 1 / myPow1(x, -N);
     }
 
     public double quick(double x, int n) {
@@ -652,7 +633,7 @@ public class LeetCodeSolution {
 
     public static void main(String[] args) {
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
-        System.out.println(new LeetCodeSolution().myPow2(3.00000
-                , 4));
+        System.out.println(new LeetCodeSolution().myPow2(2.00000,
+                -2147483648));
     }
 }
