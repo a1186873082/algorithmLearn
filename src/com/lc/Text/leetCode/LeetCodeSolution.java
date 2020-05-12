@@ -549,14 +549,14 @@ public class LeetCodeSolution {
         TreeNode p = new TreeNode(nodeList.get(0));
         TreeNode returnNode = p;
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
-        int i=0;
-        while (p!=null){
-            if(2*i+1<nodeList.size()){
-                p.left = new TreeNode(nodeList.get(2*i+1));
+        int i = 0;
+        while (p != null) {
+            if (2 * i + 1 < nodeList.size()) {
+                p.left = new TreeNode(nodeList.get(2 * i + 1));
                 queue.add(p.left);
             }
-            if (2*i+2<nodeList.size()){
-                p.right = new TreeNode(nodeList.get(2*i+2));
+            if (2 * i + 2 < nodeList.size()) {
+                p.right = new TreeNode(nodeList.get(2 * i + 2));
                 queue.add(p.right);
             }
             p = queue.poll();
@@ -565,10 +565,72 @@ public class LeetCodeSolution {
         return returnNode;
     }
 
+    /**
+     * 暴力法
+     * <p>
+     * 实现 pow(x, n) ，即计算 x 的 n 次幂函数。
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        double returnValue = x;
+        if (x == 0) {
+            return 0;
+        }
+        if (n == 0) {
+            return 1;
+        }
+        boolean flag = n > 0 ? true : false;
+        if (!flag) {
+            n = -n;
+        }
+        for (int i = 1; i < n; i++) {
+            returnValue = returnValue * x;
+        }
+        if (!flag) {
+            returnValue = 1 / returnValue;
+        }
+        return returnValue;
+    }
+
+    /**
+     * 求出最大的基准数(比如2的6次方=4的3次方,   3的4次方=9的平方)
+     */
+    public double myPow1(double x, long n) {
+        double jishu = x;
+        double ans = 1.0;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans *= jishu;
+            }
+            jishu *= jishu;
+            n /= 2;
+        }
+        return ans;
+    }
+
+    /**
+     * 分治递归
+     * x3 = y2*x
+     */
+    public double myPow2(double x, int n) {
+        long N = n;
+        return N > 0 ? myPow1(x, N) : 1 / myPow1(x, -N);
+    }
+
+    public double quick(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        double y = quick(x, n / 2);
+        return n % 2 == 0 ? y * y : y * y * x;
+    }
+
     public static void main(String[] args) {
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
-        TreeNode s = new LeetCodeSolution().createNode(new LinkedList<Integer>(Arrays.asList(new Integer[]{3, 4, 5, 1, 2})));
-        TreeNode t = new LeetCodeSolution().createNode(new LinkedList<Integer>(Arrays.asList(new Integer[]{4, 1, 2})));
-        System.out.println(new LeetCodeSolution().isSubtree(s, t));
+        System.out.println(new LeetCodeSolution().myPow2(2.00000,
+                -2147483648));
     }
 }
