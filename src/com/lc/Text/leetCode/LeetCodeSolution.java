@@ -1,10 +1,7 @@
-package com.lc.Text;
-
-import com.sun.deploy.util.StringUtils;
+package com.lc.Text.leetCode;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 public class LeetCodeSolution {
