@@ -1,8 +1,8 @@
 package com.lc.Text.leetCode;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import com.lc.Text.NiuKeSolution;
+
+import java.util.*;
 
 public class LeetCodeSolution {
     /**
@@ -483,15 +483,15 @@ public class LeetCodeSolution {
     }
 
 
-    public class TreeNode {
-        int val;
+    public static class TreeNode {
+        Integer val;
         TreeNode left;
         TreeNode right;
 
         TreeNode() {
         }
 
-        TreeNode(int val) {
+        TreeNode(Integer val) {
             this.val = val;
         }
 
@@ -628,9 +628,67 @@ public class LeetCodeSolution {
         return n % 2 == 0 ? y * y : y * y * x;
     }
 
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if(root == null){
+            return new ArrayList<>();
+        }
+        List<List<Integer>> returnList = new ArrayList<>();
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            List<Integer> liceng = new ArrayList<>();
+            int count = queue.size();
+            while (count > 0){
+                root = queue.peek();
+                if (root.left != null) {
+                    queue.add(root.left);
+                }
+                if (root.right != null) {
+                    queue.add(root.right);
+                }
+                count--;
+                queue.removeFirst();
+                liceng.add(root.val);
+            }
+            returnList.add(liceng);
+        }
+        return returnList;
+    }
+
+
+    /**
+     * 层次顺序创建二叉树
+     */
+    public static TreeNode levelCreateTreeNode(LinkedList<Integer> inputList) {
+        TreeNode treeNode = new TreeNode(inputList.get(0));
+        TreeNode returnNode = treeNode;
+        Queue<TreeNode> queue = new LinkedList();
+        int i = 0;
+        while (treeNode != null) {
+            if ((2 * i + 1) < inputList.size()) {
+                treeNode.left = new TreeNode(inputList.get(2 * i + 1));
+                queue.add(treeNode.left);
+            }
+
+            if ((2 * i + 2) < inputList.size()) {
+                treeNode.right = new TreeNode(inputList.get(2 * i + 2));
+                queue.add(treeNode.right);
+            }
+
+            treeNode = queue.poll();
+            i++;
+        }
+        return returnNode;
+    }
+
     public static void main(String[] args) {
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
-        System.out.println(new LeetCodeSolution().myPow2(2.00000,
-                -2147483648));
+        LinkedList<Integer> inputList = new LinkedList<>(
+                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
+        TreeNode root = levelCreateTreeNode(inputList);
+
+        List<List<Integer>> list = new LeetCodeSolution().levelOrder(root);
+        System.out.println(list);
     }
 }
