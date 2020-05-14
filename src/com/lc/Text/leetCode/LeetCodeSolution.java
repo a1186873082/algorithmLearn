@@ -4,6 +4,8 @@ import com.lc.Text.NiuKeSolution;
 
 import java.util.*;
 
+import static java.util.Arrays.*;
+
 public class LeetCodeSolution {
     /**
      * 整数反转-----------------------------
@@ -682,13 +684,56 @@ public class LeetCodeSolution {
         return returnNode;
     }
 
-    public static void main(String[] args) {
-//        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
-        LinkedList<Integer> inputList = new LinkedList<>(
-                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
-        TreeNode root = levelCreateTreeNode(inputList);
+    /**
+     * 给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+     *
+     * 暴力解法
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        for(int num = 0; num < nums.length; num++){
+            int count = 0;
+            x:for(int j = 0; j<nums.length; j++){
+                if(num != j && nums[num] == nums[j]){
+                    count ++;
+                }
+                if(count > 0){
+                    break x;
+                }
+            }
+            if(count == 0){
+                return nums[num];
+            }
+        }
+        return -1;
+    }
 
-        List<List<Integer>> list = new LeetCodeSolution().levelOrder(root);
-        System.out.println(list);
+    /**
+     * 采取异或特性解决
+     * 0^n=n
+     * n^n=0
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumber1(int[] nums) {
+        int returnValue = 0;
+        for (int num : nums) {
+            returnValue^=num;
+        }
+        return returnValue;
+    }
+
+    public static void main(String[] args) {
+        int[] a = {2,2,1};
+        new LeetCodeSolution().singleNumber1(a);
+//        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
+//        LinkedList<Integer> inputList = new LinkedList<>(
+//                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
+//        TreeNode root = levelCreateTreeNode(inputList);
+//
+//        List<List<Integer>> list = new LeetCodeSolution().levelOrder(root);
+//        System.out.println(list);
     }
 }
