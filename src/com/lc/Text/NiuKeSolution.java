@@ -3,6 +3,7 @@ package com.lc.Text;
 import sun.reflect.generics.tree.Tree;
 
 import javax.xml.soap.Node;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -904,17 +905,17 @@ public class NiuKeSolution {
         return returnNode;
     }
 
-    public static void printLevelTree(TreeNode treeNode){
+    public static void printLevelTree(TreeNode treeNode) {
         LinkedList<TreeNode> linkedList = new LinkedList();
         linkedList.add(treeNode);
         TreeNode temp = null;
-        while (!linkedList.isEmpty()){
+        while (!linkedList.isEmpty()) {
             temp = linkedList.peek();
             System.out.println(temp.val);
-            if(temp.left != null){
+            if (temp.left != null) {
                 linkedList.add(temp.left);
             }
-            if(temp.right != null){
+            if (temp.right != null) {
                 linkedList.add(temp.right);
             }
             linkedList.removeFirst();
@@ -1007,16 +1008,47 @@ public class NiuKeSolution {
         }
     }
 
+    public int[] maopao(int[] a) {
+        for (int i = 0; i < a.length; i++) {
+            for (int j = i + 1; j < a.length; j++) {
+                if (a[i] > a[j]) {
+                    int temp = a[i];
+                    a[i] = a[j];
+                    a[j] = temp;
+                }
+            }
+        }
+        return a;
+    }
+
+    /**
+     * 遍历所有文件
+     * @param path
+     */
+    public void printDir(String path) {
+        File file = new File(path);
+        File[] files = file.listFiles();
+        for (File file1 : files) {
+            if(file1.isDirectory()){
+                printDir(file1.getPath());
+            }else {
+                System.out.println(file1.getName());
+            }
+        }
+    }
 
     public static void main(String[] args) throws Exception {
-        LinkedList<Integer> inputList = new LinkedList<>(
-                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
-        TreeNode root = levelCreateTreeNode(inputList);
+        new NiuKeSolution().printDir("C:\\Users\\admin\\Desktop\\ue4文档");
+//        LinkedList<Integer> inputList = new LinkedList<>(
+//                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
+//        int[] a = {6, 1, 4, 2, 1, 5, 8, 21, 55, 3, 2, 10, 91, 0};
+//        a = new NiuKeSolution().maopao(a);
+//        TreeNode root = levelCreateTreeNode(inputList);
 //        twoTree(root);
 //        System.out.println("前序");
 //        nonRecursionPrevTraverse(root);
 //        System.out.println("中序");
-        printLevelTree(root);
+//        printLevelTree(root);
 //        Long s = System.currentTimeMillis();
 //        String str = "tiapwqirjasjfasjfasifjvjzxvuzxvjxznvnsjsafasnfasjvxvasfnasjfasfhhzxvuzxvxznvzxggggggxxxxxxxxxxxxxxxccccccccccvasaaaaaaaaagdetwewqrwqoiuroiuyerpyfbnx,bmcvxn,blkjdafsf";
 //        Set setText2 = new HashSet<>(Arrays.asList(

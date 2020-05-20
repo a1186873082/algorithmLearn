@@ -112,16 +112,21 @@ public class LeetCodeSolution {
      * @return
      */
     public int numberOfSubarrays(int[] nums, int k) {
-        int count = k;
+        List<Integer> cnt = new ArrayList<>();
+        int count = 0;
         int returnValue = 0;
-        for (int num : nums) {
-            if (isjishu(num)) {
-                count--;
+        for (int i = 0; i < nums.length; i++) {
+            if (isjishu(nums[i])) {
+                cnt.add(count + 1);
+                count = 0;
+            } else {
+                count++;
             }
-            if (count == 0) {
-                count = k;
-                returnValue++;
-            }
+        }
+
+        cnt.add(count + 1);
+        for (int i = 0; i < cnt.size() - k; i++) {
+            returnValue += cnt.get(i) * cnt.get(i + k);
         }
         return returnValue;
     }
@@ -632,7 +637,7 @@ public class LeetCodeSolution {
 
 
     public List<List<Integer>> levelOrder(TreeNode root) {
-        if(root == null){
+        if (root == null) {
             return new ArrayList<>();
         }
         List<List<Integer>> returnList = new ArrayList<>();
@@ -641,7 +646,7 @@ public class LeetCodeSolution {
         while (!queue.isEmpty()) {
             List<Integer> liceng = new ArrayList<>();
             int count = queue.size();
-            while (count > 0){
+            while (count > 0) {
                 root = queue.peek();
                 if (root.left != null) {
                     queue.add(root.left);
@@ -686,23 +691,25 @@ public class LeetCodeSolution {
 
     /**
      * 给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
-     *
+     * <p>
      * 暴力解法
+     *
      * @param nums
      * @return
      */
     public int singleNumber(int[] nums) {
-        for(int num = 0; num < nums.length; num++){
+        for (int num = 0; num < nums.length; num++) {
             int count = 0;
-            x:for(int j = 0; j<nums.length; j++){
-                if(num != j && nums[num] == nums[j]){
-                    count ++;
+            x:
+            for (int j = 0; j < nums.length; j++) {
+                if (num != j && nums[num] == nums[j]) {
+                    count++;
                 }
-                if(count > 0){
+                if (count > 0) {
                     break x;
                 }
             }
-            if(count == 0){
+            if (count == 0) {
                 return nums[num];
             }
         }
@@ -720,14 +727,49 @@ public class LeetCodeSolution {
     public int singleNumber1(int[] nums) {
         int returnValue = 0;
         for (int num : nums) {
-            returnValue^=num;
+            returnValue ^= num;
+        }
+        return returnValue;
+    }
+
+    /**
+     *  给你一个字符串 s ，请你返回满足以下条件的最长子字符串的长度：每个元音字母，即 'a'，'e'，'i'，'o'，'u' ，在子字符串中都恰好出现了偶数次。
+     *
+     *  解題思路：
+     *
+     */
+    public int findTheLongestSubstring(String s) {
+        int returnValue = 0, status=0;
+        //此时状态值可能有以下几种情况，[00000]-[11111],总共有1^5种情况
+        int[] temp = new int[1 << 5];
+        Arrays.fill(temp,-1);
+        //最開始的狀態表狀態為：00000
+        temp[0]=0;
+        for (int i = 0; i < s.length(); i++) {
+            char car = s.charAt(i);
+            switch (car){
+                case 'a': status ^= (1<<0);break;
+                case 'e': status ^= (1<<1);break;
+                case 'i': status ^= (1<<2);break;
+                case 'o': status ^= (1<<3);break;
+                case 'u': status ^= (1<<4);break;
+                default:break;
+            }
+            //已经有状态值了，此时当前状态值到前一次状态值之间的值肯定为出现偶次数的元音字符
+            //比如[00001] - 下一次[00001]，中间出现的元音字符肯定为偶次出现的
+            if(temp[status] >= 0){
+                returnValue = Math.max(returnValue, i+1 - temp[status]);
+            }else{
+                //第一次设置状态值
+                temp[status] = i+1;
+            }
         }
         return returnValue;
     }
 
     public static void main(String[] args) {
-        int[] a = {2,2,1};
-        new LeetCodeSolution().singleNumber1(a);
+        String s = "eleetminicoworoep";
+        new LeetCodeSolution().findTheLongestSubstring(s);
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
 //        LinkedList<Integer> inputList = new LinkedList<>(
 //                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
