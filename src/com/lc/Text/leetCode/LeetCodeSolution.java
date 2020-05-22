@@ -733,38 +733,77 @@ public class LeetCodeSolution {
     }
 
     /**
-     *  给你一个字符串 s ，请你返回满足以下条件的最长子字符串的长度：每个元音字母，即 'a'，'e'，'i'，'o'，'u' ，在子字符串中都恰好出现了偶数次。
-     *
-     *  解題思路：
-     *
+     * 给你一个字符串 s ，请你返回满足以下条件的最长子字符串的长度：每个元音字母，即 'a'，'e'，'i'，'o'，'u' ，在子字符串中都恰好出现了偶数次。
+     * <p>
+     * 解題思路：
      */
     public int findTheLongestSubstring(String s) {
-        int returnValue = 0, status=0;
+        int returnValue = 0, status = 0;
         //此时状态值可能有以下几种情况，[00000]-[11111],总共有1^5种情况
         int[] temp = new int[1 << 5];
-        Arrays.fill(temp,-1);
+        Arrays.fill(temp, -1);
         //最開始的狀態表狀態為：00000
-        temp[0]=0;
+        temp[0] = 0;
         for (int i = 0; i < s.length(); i++) {
             char car = s.charAt(i);
-            switch (car){
-                case 'a': status ^= (1<<0);break;
-                case 'e': status ^= (1<<1);break;
-                case 'i': status ^= (1<<2);break;
-                case 'o': status ^= (1<<3);break;
-                case 'u': status ^= (1<<4);break;
-                default:break;
+            switch (car) {
+                case 'a':
+                    status ^= (1 << 0);
+                    break;
+                case 'e':
+                    status ^= (1 << 1);
+                    break;
+                case 'i':
+                    status ^= (1 << 2);
+                    break;
+                case 'o':
+                    status ^= (1 << 3);
+                    break;
+                case 'u':
+                    status ^= (1 << 4);
+                    break;
+                default:
+                    break;
             }
             //已经有状态值了，此时当前状态值到前一次状态值之间的值肯定为出现偶次数的元音字符
             //比如[00001] - 下一次[00001]，中间出现的元音字符肯定为偶次出现的
-            if(temp[status] >= 0){
-                returnValue = Math.max(returnValue, i+1 - temp[status]);
-            }else{
+            if (temp[status] >= 0) {
+                returnValue = Math.max(returnValue, i + 1 - temp[status]);
+            } else {
                 //第一次设置状态值
-                temp[status] = i+1;
+                temp[status] = i + 1;
             }
         }
         return returnValue;
+    }
+
+    Map<Integer, Integer> map = new HashMap<>();
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int root = preorder[0];
+        int i = 0;
+        for (i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        return myTree(preorder, inorder, 0, preorder.length - 1, 0, inorder.length - 1);
+    }
+
+    public TreeNode myTree(int[] preorder, int[] inorder, int pre_left, int pre_right, int in_left, int in_right) {
+        if(pre_left>pre_right){
+            return null;
+        }
+
+        int rootValue = preorder[pre_left];
+        TreeNode rootNode = new TreeNode(rootValue);
+        int i = map.get(rootValue);
+        //求出中序遍历左子树长度为;
+        int left_length = i-in_left;
+        //求出中序遍历右子树长度
+        int right_length = in_right-i;
+
+        rootNode.left = myTree(preorder, inorder, pre_left+1, pre_left + left_length, in_left, i-1);
+        rootNode.right = myTree(preorder, inorder, pre_left+left_length+1, pre_right, i+1, in_right);
+        return  rootNode;
     }
 
     public static void main(String[] args) {
