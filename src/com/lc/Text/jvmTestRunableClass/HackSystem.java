@@ -40,4 +40,8 @@ public class HackSystem {
     public static void println(){
         out.println();
     }
+
+    public static void main(String[] args) {
+        println();
+    }
 }

@@ -9,11 +9,11 @@ public class JavaTest {
 
         while (true) {
             try {
-                InputStream is = new FileInputStream("D:\\idea-project\\github_source\\algorithmLearn\\out\\com\\lc\\Text\\jvmTestRunableClass\\TestClass.class");
+                InputStream is = new FileInputStream("D:\\TestClass.class");
                 byte[] b = new byte[is.available()];
                 is.read(b);
                 is.close();
-                JavaClassExecuter.execute(b);
+                System.out.println(JavaClassExecuter.execute(b));
             } catch (Exception e) {
                 e.printStackTrace();
             }
