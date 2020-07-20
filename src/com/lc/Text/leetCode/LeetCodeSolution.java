@@ -789,7 +789,7 @@ public class LeetCodeSolution {
     }
 
     public TreeNode myTree(int[] preorder, int[] inorder, int pre_left, int pre_right, int in_left, int in_right) {
-        if(pre_left>pre_right){
+        if (pre_left > pre_right) {
             return null;
         }
 
@@ -797,18 +797,125 @@ public class LeetCodeSolution {
         TreeNode rootNode = new TreeNode(rootValue);
         int i = map.get(rootValue);
         //求出中序遍历左子树长度为;
-        int left_length = i-in_left;
+        int left_length = i - in_left;
         //求出中序遍历右子树长度
-        int right_length = in_right-i;
+        int right_length = in_right - i;
 
-        rootNode.left = myTree(preorder, inorder, pre_left+1, pre_left + left_length, in_left, i-1);
-        rootNode.right = myTree(preorder, inorder, pre_left+left_length+1, pre_right, i+1, in_right);
-        return  rootNode;
+        rootNode.left = myTree(preorder, inorder, pre_left + 1, pre_left + left_length, in_left, i - 1);
+        rootNode.right = myTree(preorder, inorder, pre_left + left_length + 1, pre_right, i + 1, in_right);
+        return rootNode;
+    }
+
+    /**
+     * =========================================================================================================================
+     * 给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
+     *
+     * 函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。
+     *
+     * 说明:
+     *
+     * 返回的下标值（index1 和 index2）不是从零开始的。
+     * 你可以假设每个输入只对应唯一的答案，而且你不可以重复使用相同的元素。
+     *
+     * 输入: numbers = [2, 7, 11, 15], target = 9
+     * 输出: [1,2]
+     * 解释: 2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。
+     *
+     */
+
+    /**
+     * 解法一
+     * 思路: 将数组映射为hash数组，for循环，将target减去第一个数， 拿着剩下的数去hash中寻找，找到就返回数据，未找到继续找
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] numbers, int target) {
+        int[] returnValue = new int[2];
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.length; i++) {
+            map.put(numbers[i], i);
+        }
+        for (int i = 0; i < numbers.length; i++) {
+            int shengxia = target - numbers[i];
+            if (map.containsKey(shengxia)) {
+                returnValue[0] = i + 1;
+                returnValue[1] = map.get(shengxia) + 1;
+                return returnValue;
+            } else {
+                continue;
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * 解法二
+     * 思路 双指针算法
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum2(int[] numbers, int target) {
+        int iv = 0, jv = numbers.length - 1;
+        while (numbers[iv] + numbers[jv] != target) {
+            //如果i到达,j未到达，则i+j>target,证明j要左移
+            //如果j到达,i未到达，则i+j<target,证明i要右移
+            if (numbers[iv] + numbers[jv] > target) {
+                --jv;
+            } else if (numbers[iv] + numbers[jv] < target) {
+                ++iv;
+            }
+        }
+        return new int[]{iv + 1, jv + 1};
+    }
+
+    /**
+     * =================================================================================================
+     * 将一个给定字符串根据给定的行数，以从上往下、从左到右进行 Z 字形排列。
+     * <p>
+     * 比如输入字符串为 "LEETCODEISHIRING" 行数为 3 时，排列如下：
+     * L   C   I   R
+     * E T O E S I I G
+     * E   D   H   N
+     * 之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："LCIRETOESIIGEDHN"。
+     *
+     * 思路：循环时将每一个字符确定行数，扔到对应的行里面，然后将每一行拼接起来，就是最终结果
+     *
+     * @param s
+     * @param numRows
+     * @return
+     */
+    public String convert(String s, int numRows) {
+        if (numRows == 1) {
+            return s;
+        }
+        List<StringBuffer> rows = new ArrayList<>();
+        //初始化rows.
+        for (int i = 0; i < Math.min(numRows, s.length()); i++) {
+            rows.add(new StringBuffer());
+        }
+        int currows = 0;
+        boolean goDown = false;
+        for (char c : s.toCharArray()) {
+            if (currows == 0 || currows == rows.size() - 1) {
+                goDown = !goDown;
+            }
+            rows.get(currows).append(c);
+            currows += goDown ? 1 : -1;
+        }
+        StringBuffer returnValue = new StringBuffer();
+        rows.forEach(p -> {
+            returnValue.append(p);
+        });
+        return returnValue.toString();
     }
 
     public static void main(String[] args) {
-        String s = "eleetminicoworoep";
-        new LeetCodeSolution().findTheLongestSubstring(s);
+        String s = "AB";
+        System.out.println(new LeetCodeSolution().convert(s, 1));
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
 //        LinkedList<Integer> inputList = new LinkedList<>(
 //                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
