@@ -881,7 +881,7 @@ public class LeetCodeSolution {
      * E T O E S I I G
      * E   D   H   N
      * 之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："LCIRETOESIIGEDHN"。
-     *
+     * <p>
      * 思路：循环时将每一个字符确定行数，扔到对应的行里面，然后将每一行拼接起来，就是最终结果
      *
      * @param s
@@ -913,9 +913,155 @@ public class LeetCodeSolution {
         return returnValue.toString();
     }
 
+    /**
+     * ====================================================================================
+     * 给定一个整数 n，生成所有由 1 ... n 为节点所组成的 二叉搜索树 。
+     * <p>
+     * 输入：3
+     * 输出：
+     * [
+     *   [1,null,3,2],
+     *   [3,2,null,1],
+     *   [3,1,null,null,2],
+     *   [2,1,3],
+     *   [1,null,2,null,3]
+     * ]
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        List<TreeNode> returnNode = new ArrayList<>();
+        return generateTrees(0, n);
+    }
+
+    public List<TreeNode> generateTrees(int start, int end) {
+        List<TreeNode> treeNodes = new ArrayList<>();
+        if (start >= end) {
+            treeNodes.add(null);
+            return treeNodes;
+        }
+
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> leftTreeNode = generateTrees(start, i - 1);
+            List<TreeNode> rightTreeNode = generateTrees(i + 1, end);
+            for (TreeNode left : leftTreeNode) {
+                for (TreeNode right : rightTreeNode) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = left;
+                    root.right = right;
+                    treeNodes.add(root);
+                }
+            }
+        }
+        return treeNodes;
+    }
+
+    /**
+     * ==============================================================================================
+     * 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，
+     * 输出旋转数组的最小元素。例如，数组 [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。  
+     *
+     * @param numbers
+     * @return
+     */
+    /**
+     * 不管旋转，循环整体找到最小值 O(n)
+     *
+     * @param numbers
+     * @return
+     */
+    public int minArray(int[] numbers) {
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < numbers.length; i++) {
+            if (min > numbers[i]) {
+                min = numbers[i];
+            }
+        }
+        return min;
+    }
+
+    /**
+     * 二分法查找
+     *
+     * 使用二分查找法，可以缩短时间定位出log的位置。 O(logn)
+     * @param numbers
+     * @return
+     */
+    public int minArray2(int[] numbers) {
+        int left = 0;
+        int right = numbers.length - 1;
+        while (left < right) {
+            int middle = (right + left) / 2;
+            if (numbers[right] > numbers[middle]) {
+                //证明最小值在这个区间
+                right = middle;
+            } else if (numbers[right] < numbers[middle]) {
+                left = middle + 1;
+            } else {
+                right--;
+            }
+        }
+        return numbers[left];
+    }
+
+    /**
+     * =================================================================================================================
+     * 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+     * '.' 匹配任意单个字符
+     * '*' 匹配零个或多个前面的那一个元素
+     * <p>
+     * 此时，因为*可以动态匹配前面元素的1个和多个，所以可以用动态规划思想解决
+     * 假设现在f[i][j] 代表着s的前i个数与p的前j个数匹配(也就是s[i] = p[j])，
+     * 则存在以下情况
+     * p[j]不为*号
+     * 1. f[i][j] = f[i-1][j-1], if s[i]=p[j] or p[j]='.'
+     * p[j]为*号时。则有以下情况
+     * 1. f[i][j] = f[i][j-2], if s[i] != p[j-1]
+     * 2. f[i][j] = f[i-1][j] or f[i][j-1] or f[i][j-2], if s[i] = p[j-1]
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        if (s == null || p == null) {
+            return false;
+        }
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        dp[0][0] = true;
+        for (int i = 0; i <= s.length(); i++) {
+            for (int j = 1; j <= p.length(); j++) {
+                if (p.charAt(j - 1) == '*') {
+                    if (isMatch(s, p, i, j - 1)) {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i][j - 2];
+                    }
+                } else {
+                    if (isMatch(s, p, i, j)) {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+        return dp[s.length()][p.length()];
+    }
+
+    public boolean isMatch(String s, String p, int i, int j) {
+        if (i == 0) {
+            return false;
+        }
+        if (p.charAt(j - 1) == '.') {
+            return true;
+        }
+        return s.charAt(i - 1) == p.charAt(j - 1);
+    }
+
     public static void main(String[] args) {
-        String s = "AB";
-        System.out.println(new LeetCodeSolution().convert(s, 1));
+        String s = "1";
+        String p = "2";
+        System.out.println(new LeetCodeSolution().isMatch(s, p));
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
 //        LinkedList<Integer> inputList = new LinkedList<>(
 //                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
