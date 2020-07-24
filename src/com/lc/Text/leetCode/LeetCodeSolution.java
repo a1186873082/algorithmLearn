@@ -983,8 +983,9 @@ public class LeetCodeSolution {
 
     /**
      * 二分法查找
-     *
+     * <p>
      * 使用二分查找法，可以缩短时间定位出log的位置。 O(logn)
+     *
      * @param numbers
      * @return
      */
@@ -1058,12 +1059,249 @@ public class LeetCodeSolution {
         return s.charAt(i - 1) == p.charAt(j - 1);
     }
 
+    /**
+     * =================================================================================================================
+     * 给定一个包含非负整数的 m x n 网格，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+     * <p>
+     * 说明：每次只能向下或者向右移动一步。
+     * 输入:
+     * [
+     * [1,3,1],
+     * [1,5,1],
+     * [4,2,1]
+     * ]
+     * 输出: 7
+     * 解释: 因为路径 1→3→1→1→1 的总和最小。
+     * <p>
+     * 假设dp[i][j]表示从左上角(0,0)到右下角(i,j)的最短路劲。除了第一行第一列外的数据，都可能是上面向下一步得到，或者左边向右移动得到
+     * 所以有以下几种情况
+     * 1. i > 0 and j = 0， 则 dp[i][0] = dp[i-1][0] + grid[i][0]
+     * 2. i = 0 and j > 0， 则 dp[0][j] = dp[0][j-1] + grid[0][j]
+     * 3. i > 0 and j > 0， 则dp[i][j] = Math.min(dp[i-1][j]+grid[i][j], dp[i][j-1]+grid[i][j]) = Math.min(dp[i-1][j],dp[i][j-1]) + grid[i][j]
+     * <p>
+     * 由动态规划推导出以上结论
+     */
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[grid.length][grid[0].length];
+        dp[0][0] = grid[0][0];
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (i > 0 && j == 0) {
+                    dp[i][0] = dp[i - 1][0] + grid[i][0];
+                }
+                if (i == 0 && j > 0) {
+                    dp[0][j] = dp[0][j - 1] + grid[0][j];
+                }
+                if (i > 0 && j > 0) {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[grid.length - 1][grid[0].length - 1];
+    }
+
+    /**
+     * =================================================================================================================
+     * 给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 
+     * (i, ai) 和 (i, 0)。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+     * <p>
+     * 说明：你不能倾斜容器，且 n 的值至少为 2。
+     * <p>
+     * <p>
+     * 暴力解法
+     *
+     * @param args
+     */
+    public int maxArea(int[] height) {
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < height.length; i++) {
+            for (int j = i + 1; j < height.length; j++) {
+                if (max < Math.min(height[i], height[j]) * (j - i)) {
+                    max = Math.min(height[i], height[j]) * (j - i);
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 双指针解决
+     *
+     * @param height
+     * @return
+     */
+    public int maxArea2(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int max = Integer.MIN_VALUE;
+        while (right > left) {
+            if (max < Math.min(height[left], height[right]) * (right - left)) {
+                max = Math.min(height[left], height[right]) * (right - left);
+            }
+            if (height[right] > height[left]) {
+                left++;
+            } else if (height[right] <= height[left]) {
+                right--;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * =================================================================================================================
+     * 爱丽丝和鲍勃一起玩游戏，他们轮流行动。爱丽丝先手开局。
+     * <p>
+     * 最初，黑板上有一个数字 N 。在每个玩家的回合，玩家需要执行以下操作：
+     * <p>
+     * 选出任一 x，满足 0 < x < N 且 N % x == 0 。
+     * 用 N - x 替换黑板上的数字 N 。
+     * 如果玩家无法执行这些操作，就会输掉游戏。
+     * <p>
+     * 只有在爱丽丝在游戏中取得胜利时才返回 True，否则返回 false。假设两个玩家都以最佳状态参与游戏。
+     * <p>
+     * 输入：2
+     * 输出：true
+     * 解释：爱丽丝选择 1，鲍勃无法进行操作。
+     * <p>
+     * N=1 的时候，区间 (0, 1)(0,1) 中没有整数是 nn 的因数，所以此时 Alice 败。
+     * N=2 的时候，Alice 只能拿 1，NN 变成 1，Bob 无法继续操作，故 Alice 胜。
+     * N=3 的时候，Alice 只能拿 1，NN 变成 2，根据 N=2 的结论，我们知道此时 Bob 会获胜，Alice 败。
+     * N=4 的时候，Alice 能拿 1 或 2，如果 Alice 拿 1，根据 N=3 的结论，Bob 会失败，Alice 会获胜。
+     * N=5 的时候，Alice 只能拿 1，根据 N=4 的结论，Alice 会失败。
+     * <p>
+     * 列出猜想，偶数Alice成功，奇数Alice失败
+     *
+     * @param N
+     * @return
+     */
+    public boolean divisorGame(int N) {
+        return N % 2 == 0;
+    }
+
+    /**
+     * 另一种解法
+     * 当N=K时，Alice先手做一步操作，则使得Bob处于N = m（m<k）状态。
+     * 即：
+     * f(i)表示当前数字i时先手处于必胜态还是必败态，true为必胜态，false为必败态
+     * 则f(i-j)必须处于必败态才行
+     *
+     * @param N
+     * @return
+     */
+    public boolean divisorGame1(int N) {
+        boolean[] f = new boolean[N + 3];
+        f[1] = false;
+        f[2] = true;
+        for (int i = 3; i <= N; i++) {
+            for (int j = 1; j < i; j++) {
+                if (i % j == 0 && !f[i - j]) {
+                    f[i] = true;
+                    break;
+                }
+            }
+        }
+        return f[N];
+    }
+
+    /**
+     * =================================================================================================================
+     * 罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。
+     * 字符          数值
+     * I             1
+     * V             5
+     * X             10
+     * L             50
+     * C             100
+     * D             500
+     * M             1000
+     * 例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
+     * <p>
+     * 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
+     * <p>
+     * I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
+     * X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 
+     * C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
+     * 给定一个整数，将其转为罗马数字。输入确保在 1 到 3999 的范围内。
+     * <p>
+     * 例如:
+     * 输入: 3
+     * 输出: "III"
+     * <p>
+     * 思路，算出每一位的最高值
+     *
+     * @param num
+     * @return
+     */
+    public String intToRoman(int num) {
+        StringBuffer returnValue = new StringBuffer();
+        Stack<String> stack = new Stack<>();
+        int f = 0;
+        do {
+            f++;
+            String I = "", V = "", IV = "", IX = "";
+            switch (f) {
+                case 1:
+                    I = "I";
+                    V = "V";
+                    IV = "IV";
+                    IX = "IX";
+                    break;
+                case 2:
+                    I = "X";
+                    V = "L";
+                    IV = "XL";
+                    IX = "XC";
+                    break;
+                case 3:
+                    I = "C";
+                    V = "D";
+                    IV = "CD";
+                    IX = "CM";
+                    break;
+                case 4:
+                    I = "M";
+                    break;
+            }
+            StringBuffer stringBuffer = new StringBuffer();
+            int yushu = num % 10;
+
+            if (yushu >= 5 && yushu < 9) {
+                yushu = yushu - 5;
+                stringBuffer.append(V);
+                if (yushu > 3) {
+                    stringBuffer.append(IV);
+                } else {
+                    for (int i = 0; i < yushu; i++) {
+                        stringBuffer.append(I);
+                    }
+                }
+            } else if (yushu < 5) {
+                if (yushu > 3) {
+                    stringBuffer.append(IV);
+                } else {
+                    for (int i = 0; i < yushu; i++) {
+                        stringBuffer.append(I);
+                    }
+                }
+            } else {
+                stringBuffer.append(IX);
+            }
+            stack.push(stringBuffer.toString());
+        } while ((num /= 10) >= 1);
+        while (!stack.isEmpty()) {
+            returnValue.append(stack.pop());
+        }
+        return returnValue.toString();
+    }
+
     public static void main(String[] args) {
-        String s = "1";
-        String p = "2";
-        System.out.println(new LeetCodeSolution().isMatch(s, p));
+        int s = 1994;
+        System.out.println(new LeetCodeSolution().intToRoman(s));
 //        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
-//        LinkedList<Integer> inputList = new LinkedList<>(
+//        LinkedList<Integer> inputList = new LinkedList<>(x
 //                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
 //        TreeNode root = levelCreateTreeNode(inputList);
 //
