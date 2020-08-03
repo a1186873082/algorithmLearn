@@ -3,6 +3,7 @@ package com.lc.Text.leetCode;
 import com.lc.Text.NiuKeSolution;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.*;
 
@@ -1113,7 +1114,7 @@ public class LeetCodeSolution {
      * <p>
      * 暴力解法
      *
-     * @param args
+     * @param height
      */
     public int maxArea(int[] height) {
         int max = Integer.MIN_VALUE;
@@ -1297,15 +1298,185 @@ public class LeetCodeSolution {
         return returnValue.toString();
     }
 
+    public String intToRoman2(int num) {
+        int[] arrayInt = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
+        String[] arrayStr = {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
+        StringBuffer sb = new StringBuffer();
+        for (int i = arrayInt.length - 1; i >= 0; i--) {
+            if (num >= arrayInt[i]) {
+                num = num - arrayInt[i];
+                sb.append(arrayStr[i]);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 魔术索引。 在数组A[0...n-1]中，有所谓的魔术索引，满足条件A[i] = i。给定一个有序整数数组，编写一种方法找出魔术索引，
+     * 若有的话，在数组A中找出一个魔术索引，如果没有，则返回-1。若有多个魔术索引，返回索引值最小的一个。
+     * <p>
+     * 输入：nums = [0, 2, 3, 4, 5]
+     * 输出：0
+     * 说明: 0下标的元素为0
+     *
+     * @param nums
+     */
+    public int findMagicIndex(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            if (i == nums[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int findMagicIndex1(int[] nums) {
+        return twoSearch(0, nums.length - 1, nums);
+    }
+
+    public int twoSearch(int left, int right, int[] nums) {
+        if (left >= right) {
+            return -1;
+        }
+        int mod = (left + right) / 2;
+        int f = twoSearch(left, mod + 1, nums);
+        if (f != -1) {
+            return f;
+        } else {
+            if (mod == nums[mod]) {
+                return mod;
+            }
+        }
+        return twoSearch(mod + 1, right, nums);
+    }
+
+    /**
+     * =================================================================================================================
+     * 给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和。
+     * <p>
+     * 注意：
+     * <p>
+     * num1 和num2 的长度都小于 5100.
+     * num1 和num2 都只包含数字 0-9.
+     * num1 和num2 都不包含任何前导零。
+     * 你不能使用任何內建 BigInteger 库， 也不能直接将输入的字符串转换为整数形式。
+     * <p>
+     * 思路1，拿着ascii码，硬算
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String addStrings(String num1, String num2) {
+        StringBuffer sb = new StringBuffer();
+        int jinwei = 0, i = num1.length() - 1, j = num2.length() - 1;
+        while (i >= 0 || j >= 0 || jinwei > 0) {
+            int n1 = 0, n2 = 0;
+            if (i >= 0) {
+                n1 = num1.charAt(i) - '0';
+                i--;
+            }
+            if (j >= 0) {
+                n2 = num2.charAt(j) - '0';
+                j--;
+            }
+            int sum = (n1 + n2 + jinwei) % 10;
+            jinwei = (n1 + n2 + jinwei) / 10;
+            sb.append((char) (sum + '0'));
+        }
+        sb.reverse();
+        return sb.toString();
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+     * <p>
+     * 注意：答案中不可以包含重复的三元组。
+     * <p>
+     * 1. 通过hash表寻找数据. 固定a,b时,有且仅有1个c于其对应,即a+b+c = 0;
+     * 2. 通过保证不重复通过以下步骤表明
+     * ①.数组有序时, 不重复,且a+b+c为0的基本条件必须是:  a<b<c
+     * ②.如果相邻数相等时,如{-1,0,0,1,1,1}, 则取出{-1,0,1}后, 下个j=0时,认为该数已经存在过,即过滤掉
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> arrayList = new ArrayList<>();
+        Arrays.sort(nums);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            map.put(nums[i], i);
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            for (int j = i + 1; j < nums.length; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                int num = nums[i] + nums[j];
+                if (map.containsKey(0 - num) && map.get(0 - num) > j) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(0 - num);
+                    arrayList.add(list);
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    /**
+     * 不用hash方式,采用循环寻找C.(双指针) a为第一层循环,b为第二层循环,c为第三层循环
+     * c比b大,所以一定是在b的右边,且c的值也必须比b大.所以可以定位c为最右边数组,做c--,b作为数组左边做b++;
+     * 因此.在固定a的情况, b,c做双指针减少即可.
+     * <p>
+     * 有个优化点:
+     * 设 a + b + c = 0;  a + b' + c' = 0, 即可得出 b'>b, c'<c; b==c时,此时打破了b<c的情况.就算继续continue让b'出现,也不会存在c'的情况.因此当b == c时,可以重新定义a的位置
+     * 即此时最坏也只会有双重循环,时间复杂度为O(n^2)
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum1(int[] nums) {
+        List<List<Integer>> arrayList = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int target = -nums[i];
+            int three = nums.length - 1;
+            for (int j = i + 1; j < nums.length; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                while (three > j && nums[three] + nums[j] > target) {//要么找到了,要么就是 b==c
+                    three--;
+                }
+                if (three == j) {
+                    break;
+                }
+                if (nums[j] + nums[three] == target) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(nums[three]);
+                    arrayList.add(list);
+                }
+            }
+        }
+        return arrayList;
+    }
+
+
     public static void main(String[] args) {
-        int s = 1994;
-        System.out.println(new LeetCodeSolution().intToRoman(s));
-//        new LeetCodeSolution().numberOfSubarrays({2,2,2,1,2,2,1,2,2,2})
-//        LinkedList<Integer> inputList = new LinkedList<>(x
-//                Arrays.asList(new Integer[]{3, 2, 9, null, null, 10, null, null, 8, null, 4}));
-//        TreeNode root = levelCreateTreeNode(inputList);
-//
-//        List<List<Integer>> list = new LeetCodeSolution().levelOrder(root);
-//        System.out.println(list);
+        int[] nums = {-4, -2, 1, -5, -4, -4, 4, -2, 0, 4, 0, -2, 3, 1, -5, 0};
+        System.out.println(new LeetCodeSolution().threeSum1(nums));
     }
 }
