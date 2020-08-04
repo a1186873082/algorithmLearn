@@ -1474,6 +1474,103 @@ public class LeetCodeSolution {
         return arrayList;
     }
 
+    /**
+     * 你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
+     * <p>
+     * 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个匹配来表示他们：[0,1]
+     * <p>
+     * 给定课程总量以及它们的先决条件，请你判断是否可能完成所有课程的学习？
+     * <p>
+     * 思考:
+     * 以下几种情况不可能完成课程的学习
+     * 课程不能循环 比如完成 1必须完成0 且完成0必须完成1
+     * <p>
+     * 此题是一道典型的topo排序的题目，只要保证topo图中不存在环，即可为true
+     * 解法：
+     * 1. 深度优先搜索
+     * 2. 广度优先搜索
+     *
+     * @param numCourses
+     * @param prerequisites
+     */
+    List<List<Integer>> edges;
+    int[] visited;
+    boolean valid = true;
+
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        edges = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            edges.add(new ArrayList<>());
+        }
+        visited = new int[numCourses];
+        for (int[] info : prerequisites) {
+            edges.get(info[1]).add(info[0]);
+        }
+        for (int i = 0; i < numCourses && valid; i++) {
+            if (visited[i] == 0) {
+                dfs(i);
+            }
+        }
+        return valid;
+    }
+
+    public void dfs(int u) {
+        visited[u] = 1;
+        for (int v : edges.get(u)) {
+            if (visited[v] == 0) {
+                dfs(v);
+                if (!valid) {
+                    return;
+                }
+            } else if (visited[v] == 1) {
+                valid = false;
+                return;
+            } else {
+                return;
+            }
+            visited[u] = 2;
+        }
+    }
+
+    /**
+     * 广度优先搜索
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public boolean canFinish1(int numCourses, int[][] prerequisites) {
+        //有多少必修课程，要完成前需要有多少选修课程
+        edges = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            edges.add(new ArrayList<>());
+        }
+        //默认课程都为1
+        visited = new int[numCourses];
+        for (int[] prerequisite : prerequisites) {
+            edges.get(prerequisite[1]).add(prerequisite[0]);
+            visited[prerequisite[0]]++;
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (visited[i] == 0) {
+                queue.offer(i);
+            }
+        }
+
+        int vis = 0;
+        while(!queue.isEmpty()){
+            ++vis;
+            int u = queue.poll();
+            for (int v : edges.get(u)) {
+                --visited[v];
+                if(visited[v] == 0){
+                    queue.offer(v);
+                }
+            }
+        }
+        return vis==numCourses;
+    }
 
     public static void main(String[] args) {
         int[] nums = {-4, -2, 1, -5, -4, -4, 4, -2, 0, 4, 0, -2, 3, 1, -5, 0};
