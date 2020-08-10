@@ -3,6 +3,7 @@ package com.lc.Text.leetCode;
 import com.lc.Text.NiuKeSolution;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.*;
@@ -1559,21 +1560,149 @@ public class LeetCodeSolution {
         }
 
         int vis = 0;
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             ++vis;
             int u = queue.poll();
             for (int v : edges.get(u)) {
                 --visited[v];
-                if(visited[v] == 0){
+                if (visited[v] == 0) {
                     queue.offer(v);
                 }
             }
         }
-        return vis==numCourses;
+        return vis == numCourses;
     }
 
+    /**
+     * =================================================================================================================
+     * 给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。
+     * <p>
+     * 重复出现的子串要计算它们出现的次数。
+     * <p>
+     * 输入: "00110011"
+     * 输出: 6
+     * 解释: 有6个子串具有相同数量的连续1和0：“0011”，“01”，“1100”，“10”，“0011” 和 “01”。
+     * <p>
+     * 请注意，一些重复出现的子串要计算它们出现的次数。
+     * <p>
+     * 另外，“00110011”不是有效的子串，因为所有的0（和1）没有组合在一起。
+     * <p>
+     * 解答:
+     * 中心扩散思想，并统计相邻个数
+     *
+     * @param s
+     * @return
+     */
+    public int countBinarySubstrings(String s) {
+        int left = 0;
+        int right = left + 1;
+        int prev = -1;
+        int count = 0;
+        while (right < s.length()) {
+            if (left >= 0 && s.charAt(left) != s.charAt(right)
+                    &&
+                    (prev == -1 || prev != -1 && s.charAt(prev) == s.charAt(right))) {
+                //两边扩散
+                count++;
+                prev = right;
+                left--;
+                right++;
+            } else {
+                left = prev == -1 ? right : prev;
+                right = left + 1;
+                prev = -1;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 解答2
+     * 利用统计分组解决
+     */
+    public int countBinarySubstrings1(String s) {
+        List<Integer> list = new ArrayList<>();
+        int count = 1;
+        for (int i = 0; i < s.length(); i++) {
+            if (i + 1 < s.length() && s.charAt(i) == s.charAt(i + 1)) {
+                count++;
+            }
+            if (i == s.length() - 1) {
+                list.add(count);
+            } else if (s.charAt(i) != s.charAt(i + 1)) {
+                list.add(count);
+                count = 1;
+            }
+        }
+        int sum = 0;
+        for (int i = 0; i < list.size() - 1; i++) {
+            sum += Math.min(list.get(i), list.get(i + 1));
+        }
+        return sum;
+    }
+
+    //优化
+    public int countBinarySubstrings2(String s) {
+        int count = 0, last = 0, curr = 0, sum = 0;
+        while (curr < s.length()) {
+            char c = s.charAt(curr);
+            while (curr < s.length() && c == s.charAt(curr)) {
+                count++;
+                curr++;
+            }
+            sum += Math.min(count, last);
+            last = count;
+            count = 0;
+        }
+        return sum;
+    }
+
+    /**
+     * =================================================================================================================
+     * 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。
+     * 给出数字到字母的映射与电话按键相同。注意 1 不对应任何字母。
+     * <p>
+     * 思考
+     * 固定参数，循环调用
+     *
+     * 将上一次匹配完成的list，循环加上这一次的参数，最后结果即为所得
+     */
+    int[] a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    String[] mapperArray = {"!@#", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
+    public List<String> letterCombinations(String digits) {
+        List<String> s = new ArrayList<>();
+        for (int i = 0; i < digits.length(); i++) {
+            s = returnArray(digits.charAt(i) - '0', s);
+        }
+        return s;
+    }
+
+    public List<String> returnArray(int i, List<String> list) {
+        List<String> returnArray = new ArrayList<>();
+        String mapper = mapperArray[i - 1];
+        for (int j = 0; j < mapper.length(); j++) {
+            if (list.size() > 0) {
+                for (String s : list) {
+                    s = s + Character.toString(mapper.charAt(j));
+                    returnArray.add(s);
+                }
+            } else {
+                String s = String.valueOf(mapper.charAt(j));
+                returnArray.add(s);
+            }
+        }
+        return returnArray;
+    }
+
+    /**
+     * @param args
+     */
+
     public static void main(String[] args) {
-        int[] nums = {-4, -2, 1, -5, -4, -4, 4, -2, 0, 4, 0, -2, 3, 1, -5, 0};
-        System.out.println(new LeetCodeSolution().threeSum1(nums));
+//        int[] nums = {-4, -2, 1, -5, -4, -4, 4, -2, 0, 4, 0, -2, 3, 1, -5, 0};
+//        System.out.println(new LeetCodeSolution().threeSum1(nums));
+        String s = "23";
+        System.out.println(new LeetCodeSolution().letterCombinations(s));
     }
 }
