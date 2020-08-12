@@ -1,6 +1,7 @@
 package com.lc.Text.leetCode;
 
 import com.lc.Text.NiuKeSolution;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1664,7 +1665,7 @@ public class LeetCodeSolution {
      * <p>
      * 思考
      * 固定参数，循环调用
-     *
+     * <p>
      * 将上一次匹配完成的list，循环加上这一次的参数，最后结果即为所得
      */
     int[] a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -1696,13 +1697,182 @@ public class LeetCodeSolution {
     }
 
     /**
+     * =================================================================================================================
+     * 给定一个二维的矩阵，包含 'X' 和 'O'（字母 O）。
+     * 找到所有被 'X' 围绕的区域，并将这些区域里所有的 'O' 用 'X' 填充。
+     * 示例:
+     * <p>
+     * 思路，图形解答一般首先会想到dfs和bfs两种思路
+     * <p>
+     * dfs:深度优先搜索
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        int m = board.length;
+        if (m == 0) {
+            return;
+        }
+        int n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            dfs(board, i, 0);
+            dfs(board, i, n - 1);
+        }
+        for (int i = 0; i < n; i++) {
+            dfs(board, 0, i);
+            dfs(board, m - 1, i);
+        }
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == 'A') {
+                    board[i][j] = 'O';
+                } else {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    public void dfs(char[][] board, int x, int y) {
+        if (x < 0 || y < 0 || x >= board.length || y >= board[0].length || board[x][y] != 'O') {
+            return;
+        }
+        board[x][y] = 'A';
+        dfs(board, x - 1, y);
+        dfs(board, x + 1, y);
+        dfs(board, x, y - 1);
+        dfs(board, x, y + 1);
+    }
+
+    /**
+     * bfs:广度优先搜索
+     */
+    int[] fx = {-1, 1, 0, 0};
+    int[] dx = {0, 0, 1, -1};
+
+    public void solve1(char[][] board) {
+        int m = board.length;
+        if (m == 0) {
+            return;
+        }
+        int n = board[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        for (int i = 0; i < m; i++) {
+            if (board[i][0] == 'O') {
+                queue.offer(new int[]{i, 0});
+            }
+            if (board[i][n - 1] == 'O') {
+                queue.offer(new int[]{i, n - 1});
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (board[0][i] == 'O') {
+                queue.offer(new int[]{0, i});
+            }
+            if (board[m - 1][i] == 'O') {
+                queue.offer(new int[]{m - 1, i});
+            }
+        }
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            int x = cell[0], y = cell[1];
+            board[x][y] = 'A';
+            for (int i = 0; i < 4; i++) {
+                int mx = x + dx[i], nx = y + fx[i];
+                if (mx < 0 || nx < 0 || mx >= board.length || nx >= board[0].length || board[mx][nx] != 'O') {
+                    continue;
+                }
+                queue.offer(new int[]{mx, nx});
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == 'A') {
+                    board[i][j] = 'O';
+                } else {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    /**
+     * =================================================================================================================
+     * 克隆图
+     * <p>
+     * 给你无向 连通 图中一个节点的引用，请你返回该图的 深拷贝（克隆）。
+     * 图中的每个节点都包含它的值 val（int） 和其邻居的列表（list[Node]）。
+     * <p>
+     * 思考
+     * 看到图表类型的结构，第一想到的是dfs和bfs这2种搜索遍历方式进行解决
+     * 因为是无向图，为了保证不出现死循环，则需要用一个hash表解决死循环问题
+     */
+    class Node {
+        public int val;
+        public List<Node> neighbors;
+
+        public Node() {
+            val = 0;
+            neighbors = new ArrayList<Node>();
+        }
+
+        public Node(int _val) {
+            val = _val;
+            neighbors = new ArrayList<Node>();
+        }
+
+        public Node(int _val, ArrayList<Node> _neighbors) {
+            val = _val;
+            neighbors = _neighbors;
+        }
+    }
+
+    HashMap<Integer, Node> nodeMap = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        if(node == null){
+            return null;
+        }
+        if (nodeMap.containsKey(node.val)) {
+            return nodeMap.get(node.val);
+        }
+        Node cloneNode = new Node(node.val, new ArrayList<>());
+        nodeMap.put(node.val, cloneNode);
+        if (node.neighbors != null && node.neighbors.size() > 0) {
+            for (Node neighbor : node.neighbors) {
+                cloneNode.neighbors.add(cloneGraph(neighbor));
+            }
+        }
+        return cloneNode;
+    }
+
+
+    /**
      * @param args
      */
-
     public static void main(String[] args) {
 //        int[] nums = {-4, -2, 1, -5, -4, -4, 4, -2, 0, 4, 0, -2, 3, 1, -5, 0};
 //        System.out.println(new LeetCodeSolution().threeSum1(nums));
-        String s = "23";
-        System.out.println(new LeetCodeSolution().letterCombinations(s));
+
+
+        String test1 = "34";
+        char a1 = '5';
+        List<String> list = new ArrayList<>();
+        long curr = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; i++) {
+            String s = test1 + a1;
+            list.add(s);
+        }
+        System.out.println(System.currentTimeMillis() - curr);
+
+
+        String test = "34";
+        char a = '5';
+        List<String> list2 = new ArrayList<>();
+        long curr2 = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; i++) {
+            String s = test + String.valueOf(a);
+            list2.add(s);
+        }
+        System.out.println(System.currentTimeMillis() - curr2);
     }
 }
