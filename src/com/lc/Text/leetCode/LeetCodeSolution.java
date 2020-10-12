@@ -1,13 +1,8 @@
 package com.lc.Text.leetCode;
 
-import com.lc.Text.NiuKeSolution;
-import javafx.util.Pair;
+import sun.reflect.generics.tree.Tree;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.*;
 
 public class LeetCodeSolution {
     /**
@@ -1828,8 +1823,9 @@ public class LeetCodeSolution {
     }
 
     HashMap<Integer, Node> nodeMap = new HashMap<>();
+
     public Node cloneGraph(Node node) {
-        if(node == null){
+        if (node == null) {
             return null;
         }
         if (nodeMap.containsKey(node.val)) {
@@ -1845,34 +1841,143 @@ public class LeetCodeSolution {
         return cloneNode;
     }
 
+    /**
+     * =================================================================================================================
+     * 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+     * <p>
+     * 思考，乘法可以理解为另类的加法
+     * <p>
+     * 比如 345*123= 300*123+40*123+5*123
+     * 其中300*123等于123+123+123后面加00
+     * 依次类推 40*123等于123+123+123+123后面加0
+     */
+    public String multiply(String num1, String num2) {
+        if (num1 == "0" || num2 == "0") {
+            return "0";
+        }
+        Queue<String> list = new LinkedList<>();
+        String sum = "";
+        //以num1为基
+        String lastNum = "";
+        for (int i = num2.length() - 1; i >= 0; i--) {
+            //数据累加
+            for (int j = num2.charAt(i) - '0' - 1; j >= 0; j--) {
+                list.offer(num1 + lastNum);
+            }
+            lastNum += "0";
+        }
+        //将queue中的数据累加起来
+        while (!list.isEmpty()) {
+            String curr = list.poll();
+            int size = Math.max(sum.length(), curr.length());
+            int jinwei = 0;
+            StringBuffer jubu = new StringBuffer();
+            for (int i = 0; i < size; i++) {
+                int first = 0, second = 0;
+                if (i < sum.length()) {
+                    first = sum.charAt(sum.length() - 1 - i) - '0';
+                }
+                if (i < curr.length()) {
+                    second = curr.charAt(curr.length() - 1 - i) - '0';
+                }
+                jubu.append((first + second + jinwei) % 10);
+                jinwei = (first + second + jinwei) / 10;
+            }
+            if (jinwei > 0) {
+                jubu.append(jinwei);
+            }
+            sum = jubu.reverse().toString();
+        }
+        return sum;
+    }
+
 
     /**
+     * 给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
+     * <p>
+     * 本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+     * <p>
+     * 思考
+     * 采用分治法解决，因为左右子树高度差绝对值不超过1，所以需要找到其根结点，为中结点
+     */
+//    public TreeNode sortedListToBST(ListNode head) {
+//
+//    }
+
+    //采用快慢指针找到根结点
+    public ListNode getMiddle(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null || fast.next != null) {
+            fast = fast.next;
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+    /**
+     * 找到和为特定值的3个数
+     * <p>
+     * hash寻址法
+     *
+     * @param head
+     * @return
+     */
+    public List<List<Integer>> specialValue(int[] a, int n) {
+        List<List<Integer>> returnValue = new ArrayList<>();
+        for (int i = 0; i < a.length; i++) {
+            int sub = n - a[i];
+            Map<Integer, Integer> map = new HashMap<>();
+            for (int j = i + 1; j < a.length; j++) { // j=0? j=0.相当于重复走了一遍i=0时的可能情况，因此j = i + 1就好
+                int findStr = sub - a[j];
+                if (map.containsKey(findStr)) {
+                    List<Integer> array = new ArrayList<>();
+                    array.add(a[i]);
+                    array.add(a[j]);
+                    array.add(findStr);
+                    returnValue.add(array);
+                }
+                map.put(a[j], a[j]); //每一次都需要把值放入map中
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * 找到和为特定值的3个数
+     * 双指针法
+     *
      * @param args
      */
+    public List<List<Integer>> specialValue1(int[] a, int n) {
+        Arrays.sort(a);
+        List<List<Integer>> returnValue = new ArrayList<>();
+        for (int i = 0; i < a.length; i++) {
+            if (i > 0 && a[i] == a[i - 1]) { // 剔除重复出现的概率 因为有了排序，所以重复出现的数字一定会在一起
+                continue;
+            }
+            int sub = n - a[i];
+            for (int left = i + 1, right = a.length - 1; left < a.length; left++) {
+                if (left > i + 1 && a[left] == a[left - 1]) {
+                    continue;
+                }
+                while (left < right && a[left] + a[right] > sub) {
+                    right--;
+                }
+                if(left == right){
+                    break;
+                }
+                if (a[left] + a[right] == sub) {
+                    returnValue.add(Arrays.asList(a[i], a[left], a[right]));
+                }
+            }
+        }
+        return returnValue;
+    }
+
     public static void main(String[] args) {
-//        int[] nums = {-4, -2, 1, -5, -4, -4, 4, -2, 0, 4, 0, -2, 3, 1, -5, 0};
-//        System.out.println(new LeetCodeSolution().threeSum1(nums));
-
-
-        String test1 = "34";
-        char a1 = '5';
-        List<String> list = new ArrayList<>();
-        long curr = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            String s = test1 + a1;
-            list.add(s);
-        }
-        System.out.println(System.currentTimeMillis() - curr);
-
-
-        String test = "34";
-        char a = '5';
-        List<String> list2 = new ArrayList<>();
-        long curr2 = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            String s = test + String.valueOf(a);
-            list2.add(s);
-        }
-        System.out.println(System.currentTimeMillis() - curr2);
+        int[] a = {-1, 0, 1, 2, -1, -4};
+        System.out.println(new LeetCodeSolution().specialValue1(a, 0));
     }
 }
