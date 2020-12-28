@@ -1921,7 +1921,6 @@ public class LeetCodeSolution {
      * <p>
      * hash寻址法
      *
-     * @param head
      * @return
      */
     public List<List<Integer>> specialValue(int[] a, int n) {
@@ -1947,8 +1946,6 @@ public class LeetCodeSolution {
     /**
      * 找到和为特定值的3个数
      * 双指针法
-     *
-     * @param args
      */
     public List<List<Integer>> specialValue1(int[] a, int n) {
         Arrays.sort(a);
@@ -1965,7 +1962,7 @@ public class LeetCodeSolution {
                 while (left < right && a[left] + a[right] > sub) {
                     right--;
                 }
-                if(left == right){
+                if (left == right) {
                     break;
                 }
                 if (a[left] + a[right] == sub) {
@@ -1976,8 +1973,92 @@ public class LeetCodeSolution {
         return returnValue;
     }
 
+    /**
+     * ==================================================================================================================
+     * 给定一个整数数组 prices ，它的第 i 个元素 prices[i] 是一支给定的股票在第 i 天的价格。
+     * <p>
+     * 设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。
+     * <p>
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     * <p>
+     * <p>
+     * 用buy[i][j]表示prices[0...i]中，恰好做了j次交易，且手上持有股票的交易
+     * 用sell[i][j]表示prices[0...i]中，恰好做了j次交易，且手上没有持股
+     * <p>
+     * 可以做如下推算:
+     * 如果是第i天买的，第i-1天手上不持有股票，则为sell[i-1][j],但第i天买入股票-prices[i]
+     * 如果不是第i天买的，则i-1天和第i天花费相同
+     * buy[i][j] = Math.max(buy[i-1][j], sell[i-1][j] - prices[i])
+     * <p>
+     * 同理。如果是第i天卖的，第i-1天手上持股,则第i天卖掉股票+prices[i]
+     * 如果不是第i天卖的，则i-1天河第i天花费相同
+     * sell[i][j] = Math.max(sell[i-1][j], buy[i-1][j]+prices[i])
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int k, int[] prices) {
+        if (prices.length == 0) {
+            return 0;
+        }
+        //思想，存储卖出，卖入的状态，k最多不能大于prices的一半，因为2次prices为1次完整交易
+        int n = prices.length;
+        k = Math.min(k, n / 2);
+
+        int[][] buy = new int[n][k + 1];
+        int[][] sell = new int[n][k + 1];
+        buy[0][0] = -prices[0];
+        sell[0][0] = 0;
+        //因为第0天无法有正常的交易，所以可以把第0天当成动态规划边界,设置为较小值
+        for (int i = 1; i <= k; i++) {
+            sell[0][i] = buy[0][i] = Integer.MIN_VALUE / 2;
+        }
+        for (int i = 1; i < n; i++) {
+            buy[i][0] = Math.max(buy[i - 1][0], sell[i - 1][0] - prices[i]);
+            for (int j = 1; j <= k; j++) {
+                buy[i][j] = Math.max(buy[i - 1][j], sell[i - 1][j] - prices[i]);
+                sell[i][j] = Math.max(sell[i - 1][j], buy[i - 1][j - 1] + prices[i]);
+            }
+        }
+        return Arrays.stream(sell[n - 1]).max().getAsInt();
+    }
+
+    /**
+     * 解法2
+     * 在解法1中，可以发现规则方程中，用到了 [i-1]转移而来，所以我们可以用一维数组进行状态转移
+     *
+     */
+    public int maxProfit1(int k, int[] prices) {
+        if (prices.length == 0) {
+            return 0;
+        }
+        //思想，存储卖出，卖入的状态，k最多不能大于prices的一半，因为2次prices为1次完整交易
+        int n = prices.length;
+        k = Math.min(k, n / 2);
+
+        int[] buy = new int[k + 1];
+        int[] sell = new int[k + 1];
+        buy[0] = -prices[0];
+        sell[0] = 0;
+        //因为第0天无法有正常的交易，所以可以把第0天当成动态规划边界,设置为较小值
+        for (int i = 1; i <= k; i++) {
+            sell[i] = buy[i] = Integer.MIN_VALUE / 2;
+        }
+        for (int i = 1; i < n; i++) {
+            buy[0] = Math.max(buy[0], sell[0] - prices[i]);
+            for (int j = 1; j <= k; j++) {
+                buy[j] = Math.max(buy[j], sell[j] - prices[i]);
+                sell[j] = Math.max(sell[j], buy[j - 1] + prices[i]);
+            }
+        }
+        return Arrays.stream(sell).max().getAsInt();
+    }
+
+
     public static void main(String[] args) {
-        int[] a = {-1, 0, 1, 2, -1, -4};
-        System.out.println(new LeetCodeSolution().specialValue1(a, 0));
+        int k = 2;
+        int[] prices = {3, 2, 6, 5, 0, 3, 5, 2, 3};
+        System.out.println(new LeetCodeSolution().maxProfit(k, prices));
     }
 }
