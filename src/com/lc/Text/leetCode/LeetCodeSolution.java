@@ -1,5 +1,6 @@
 package com.lc.Text.leetCode;
 
+import org.omg.CORBA.INTERNAL;
 import sun.reflect.generics.tree.Tree;
 
 import java.util.*;
@@ -48,13 +49,13 @@ public class LeetCodeSolution {
 
     /**
      * ----------------------------
-     * 由 n 个连接的字符串 s 组成字符串 S，记作 S = [s,n]。例如，["abc",3]=“abcabcabc”。
+     * 由 n 个连接的字符串 s 组成字符串 S，记作 S = [s,n]。例如，["abc",3]=“abcabcabc”。
      * <p>
-     * 如果我们可以从 s2 中删除某些字符使其变为 s1，则称字符串 s1 可以从字符串 s2 获得。例如，根据定义，"abc" 可以从 “abdbec” 获得，但不能从 “acbbe” 获得。
+     * 如果我们可以从 s2 中删除某些字符使其变为 s1，则称字符串 s1 可以从字符串 s2 获得。例如，根据定义，"abc" 可以从 “abdbec” 获得，但不能从 “acbbe” 获得。
      * <p>
-     * 现在给你两个非空字符串 s1 和 s2（每个最多 100 个字符长）和两个整数 0 ≤ n1 ≤ 106 和 1 ≤ n2 ≤ 106。现在考虑字符串 S1 和 S2，其中 S1=[s1,n1] 、S2=[s2,n2] 。
+     * 现在给你两个非空字符串 s1 和 s2（每个最多 100 个字符长）和两个整数 0 ≤ n1 ≤ 106 和 1 ≤ n2 ≤ 106。现在考虑字符串 S1 和 S2，其中 S1=[s1,n1] 、S2=[s2,n2] 。
      * <p>
-     * 请你找出一个可以满足使[S2,M] 从 S1 获得的最大整数 M 。
+     * 请你找出一个可以满足使[S2,M] 从 S1 获得的最大整数 M 。
      * <p>
      * 示例：
      * 输入：
@@ -806,9 +807,9 @@ public class LeetCodeSolution {
 
     /**
      * =========================================================================================================================
-     * 给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
+     * 给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
      *
-     * 函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。
+     * 函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。
      *
      * 说明:
      *
@@ -918,11 +919,11 @@ public class LeetCodeSolution {
      * 输入：3
      * 输出：
      * [
-     *   [1,null,3,2],
-     *   [3,2,null,1],
-     *   [3,1,null,null,2],
-     *   [2,1,3],
-     *   [1,null,2,null,3]
+     * [1,null,3,2],
+     * [3,2,null,1],
+     * [3,1,null,null,2],
+     * [2,1,3],
+     * [1,null,2,null,3]
      * ]
      *
      * @param n
@@ -958,7 +959,7 @@ public class LeetCodeSolution {
     /**
      * ==============================================================================================
      * 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，
-     * 输出旋转数组的最小元素。例如，数组 [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。  
+     * 输出旋转数组的最小元素。例如，数组 [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。  
      *
      * @param numbers
      * @return
@@ -1103,10 +1104,10 @@ public class LeetCodeSolution {
 
     /**
      * =================================================================================================================
-     * 给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 
-     * (i, ai) 和 (i, 0)。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+     * 给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为
+     * (i, ai) 和 (i, 0)。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
      * <p>
-     * 说明：你不能倾斜容器，且 n 的值至少为 2。
+     * 说明：你不能倾斜容器，且 n 的值至少为 2。
      * <p>
      * <p>
      * 暴力解法
@@ -1152,13 +1153,13 @@ public class LeetCodeSolution {
      * =================================================================================================================
      * 爱丽丝和鲍勃一起玩游戏，他们轮流行动。爱丽丝先手开局。
      * <p>
-     * 最初，黑板上有一个数字 N 。在每个玩家的回合，玩家需要执行以下操作：
+     * 最初，黑板上有一个数字 N 。在每个玩家的回合，玩家需要执行以下操作：
      * <p>
-     * 选出任一 x，满足 0 < x < N 且 N % x == 0 。
-     * 用 N - x 替换黑板上的数字 N 。
+     * 选出任一 x，满足 0 < x < N 且 N % x == 0 。
+     * 用 N - x 替换黑板上的数字 N 。
      * 如果玩家无法执行这些操作，就会输掉游戏。
      * <p>
-     * 只有在爱丽丝在游戏中取得胜利时才返回 True，否则返回 false。假设两个玩家都以最佳状态参与游戏。
+     * 只有在爱丽丝在游戏中取得胜利时才返回 True，否则返回 false。假设两个玩家都以最佳状态参与游戏。
      * <p>
      * 输入：2
      * 输出：true
@@ -1215,14 +1216,14 @@ public class LeetCodeSolution {
      * C             100
      * D             500
      * M             1000
-     * 例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
+     * 例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
      * <p>
-     * 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
+     * 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
      * <p>
-     * I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
-     * X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 
-     * C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
-     * 给定一个整数，将其转为罗马数字。输入确保在 1 到 3999 的范围内。
+     * I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
+     * X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。
+     * C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
+     * 给定一个整数，将其转为罗马数字。输入确保在 1 到 3999 的范围内。
      * <p>
      * 例如:
      * 输入: 3
@@ -1349,14 +1350,14 @@ public class LeetCodeSolution {
 
     /**
      * =================================================================================================================
-     * 给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和。
+     * 给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和。
      * <p>
      * 注意：
      * <p>
-     * num1 和num2 的长度都小于 5100.
-     * num1 和num2 都只包含数字 0-9.
+     * num1 和num2 的长度都小于 5100.
+     * num1 和num2 都只包含数字 0-9.
      * num1 和num2 都不包含任何前导零。
-     * 你不能使用任何內建 BigInteger 库， 也不能直接将输入的字符串转换为整数形式。
+     * 你不能使用任何內建 BigInteger 库， 也不能直接将输入的字符串转换为整数形式。
      * <p>
      * 思路1，拿着ascii码，硬算
      *
@@ -1388,7 +1389,7 @@ public class LeetCodeSolution {
     /**
      * =================================================================================================================
      * <p>
-     * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+     * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
      * <p>
      * 注意：答案中不可以包含重复的三元组。
      * <p>
@@ -1472,9 +1473,9 @@ public class LeetCodeSolution {
     }
 
     /**
-     * 你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
+     * 你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
      * <p>
-     * 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个匹配来表示他们：[0,1]
+     * 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个匹配来表示他们：[0,1]
      * <p>
      * 给定课程总量以及它们的先决条件，请你判断是否可能完成所有课程的学习？
      * <p>
@@ -1571,7 +1572,7 @@ public class LeetCodeSolution {
 
     /**
      * =================================================================================================================
-     * 给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。
+     * 给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。
      * <p>
      * 重复出现的子串要计算它们出现的次数。
      * <p>
@@ -1895,7 +1896,7 @@ public class LeetCodeSolution {
     /**
      * 给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
      * <p>
-     * 本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+     * 本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
      * <p>
      * 思考
      * 采用分治法解决，因为左右子树高度差绝对值不超过1，所以需要找到其根结点，为中结点
@@ -2027,7 +2028,6 @@ public class LeetCodeSolution {
     /**
      * 解法2
      * 在解法1中，可以发现规则方程中，用到了 [i-1]转移而来，所以我们可以用一维数组进行状态转移
-     *
      */
     public int maxProfit1(int k, int[] prices) {
         if (prices.length == 0) {
@@ -2056,9 +2056,153 @@ public class LeetCodeSolution {
     }
 
 
+    /**
+     * =================================================================================================================
+     * 给定一个已排序的正整数数组 nums，和一个正整数n 。从[1, n]区间内选取任意个数字补充到nums中，使得[1, n]区间内的任何数字都可以用nums中
+     * 某几个数字的和来表示。请输出满足上述要求的最少需要补充的数字个数。
+     * <p>
+     * 贪心算法
+     * 对于正整数x，如果区间[1, x-1]内的所有数字都已经被覆盖，则x再数组中，[1, 2x-1]在内的所有数字也被覆盖
+     */
+    public int minPatches(int[] nums, int n) {
+        //
+        long x = 1;
+        int index = 0;
+        int count = 0;
+        while (x <= n) {
+            if (index < nums.length && nums[index] <= x) {
+                x += nums[index];
+                index++;
+            } else {
+                x *= 2;
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
+     * <p>
+     * 函数 myAtoi(string s) 的算法如下：
+     * <p>
+     * 读入字符串并丢弃无用的前导空格
+     * 检查第一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。 确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。
+     * 读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。
+     * 将前面步骤读入的这些数字转换为整数（即，"123" -> 123， "0032" -> 32）。如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。
+     * 如果整数数超过 32 位有符号整数范围 [−231,  231 − 1] ，需要截断这个整数，使其保持在这个范围内。具体来说，小于 −231 的整数应该被固定为 −231 ，大于 231 − 1 的整数应该被固定为 231 − 1 。
+     * 返回整数作为最终结果。
+     * <p>
+     * <p>
+     * <p>
+     * 解法一：暴力解法
+     *
+     * @param s
+     * @return
+     */
+    public int myAtoi(String s) {
+        char[] chars = s.toCharArray();
+        long i = 0;
+        boolean isDigit = true, rel = true;
+        for (char s1 : chars) {
+            if (' ' == s1 && isDigit) {
+                continue;
+            }
+            if ('-' == s1 && isDigit) {
+                rel = false;
+                isDigit = false;
+                continue;
+            }
+            if ('+' == s1 && isDigit) {
+                isDigit = false;
+                continue;
+            }
+            if (s1 >= '0' && s1 <= '9') {
+                i = i * 10 + (s1 - '0');
+                if (i > Integer.MAX_VALUE && rel) {
+                    i = Integer.MAX_VALUE;
+                    break;
+                } else if (-i < Integer.MIN_VALUE) {
+                    i = Integer.MIN_VALUE;
+                    break;
+                }
+            } else {
+                break;
+            }
+            isDigit = false;
+        }
+        if (!rel) {
+            i = -i;
+        }
+        return (int) i;
+    }
+
+    /**
+     * 解法二：状态机解法
+     * <p>
+     * 分四种状态，start, sign, number, end
+     * ' '      +/-     number    other
+     * start     start    sign    number    end
+     * sign      end      end     number    end
+     * number    end      end     number    end
+     * end       end      end     end       end
+     *
+     * @param s
+     * @return
+     */
+    public int myAtoi1(String s) {
+        char[] chars = s.toCharArray();
+        AutoMich autoMich = new AutoMich();
+        for (char a : chars) {
+            autoMich.myatoi(a);
+        }
+        return (int) (autoMich.ais * autoMich.res);
+    }
+
+    class AutoMich {
+        int ais = 1;
+        long res = 0;
+        String autoState = "start";
+        public Map<String, String[]> map = new HashMap<>();
+
+        {
+            map.put("start", new String[]{"start", "sign", "number", "end"});
+            map.put("sign", new String[]{"end", "end", "number", "end"});
+            map.put("number", new String[]{"end", "end", "number", "end"});
+            map.put("end", new String[]{"end", "end", "end", "end"});
+        }
+
+        public void myatoi(char a) {
+            String s = map.get(autoState)[translate(a)];
+            if ("number".equalsIgnoreCase(s)) {
+                res = res * 10 + a - '0';
+                res = ais == 1 ? Math.min(res, Integer.MAX_VALUE) : Math.min(res, -(long) Integer.MIN_VALUE);
+            } else if ("sign".equalsIgnoreCase(s)) {
+                if (a == '-') {
+                    ais = -1;
+                }
+            }
+            autoState = s;
+        }
+
+        public int translate(char a) {
+            if (a == ' ') {
+                return 0;
+            }
+            if (a == '+' || a == '-') {
+                return 1;
+            }
+            if (a >= '0' && a <= '9') {
+                return 2;
+            }
+            return 3;
+        }
+    }
+
     public static void main(String[] args) {
-        int k = 2;
-        int[] prices = {3, 2, 6, 5, 0, 3, 5, 2, 3};
-        System.out.println(new LeetCodeSolution().maxProfit(k, prices));
+//        System.out.println(new LeetCodeSolution().myAtoi1("  -42"));
+        System.out.println(-1 * Integer.MIN_VALUE);
     }
 }
