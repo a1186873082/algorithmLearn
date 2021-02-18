@@ -1,9 +1,11 @@
 package com.lc.Text.leetCode;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import org.omg.CORBA.INTERNAL;
 import sun.reflect.generics.tree.Tree;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LeetCodeSolution {
     /**
@@ -2201,8 +2203,305 @@ public class LeetCodeSolution {
         }
     }
 
+    /**
+     * =================================================================================================================
+     * <p>
+     * N 对情侣坐在连续排列的 2N 个座位上，想要牵到对方的手。 计算最少交换座位的次数，以便每对情侣可以并肩坐在一起。 一次交换可选择任意两人，让他们站起来交换座位。
+     * <p>
+     * 人和座位用 0 到 2N-1 的整数表示，情侣们按顺序编号，第一对是 (0, 1)，第二对是 (2, 3)，以此类推，最后一对是 (2N-2, 2N-1)。
+     * <p>
+     * 这些情侣的初始座位  row[i] 是由最初始坐在第 i 个座位上的人决定的。
+     * <p>
+     * 解法一：
+     * 通过索引表解决
+     *
+     * @param row
+     * @return
+     */
+    public int minSwapsCouples(int[] row) {
+        int ret = 0;
+        int n = row.length;
+        int[] indexMap = new int[n];
+        for (int i = 0; i < n; i++) {
+            indexMap[row[i]] = i;
+        }
+
+        for (int i = 0; i < n; i += 2) {
+            int p1 = row[i];
+            int p2 = p1 % 2 == 0 ? p1 + 1 : p1 - 1;
+            if (row[i + 1] == p2) {
+                //情侣在一起，无需交换
+                continue;
+            }
+            //情侣不在一起
+            swap(row, indexMap, i + 1, indexMap[p2]);
+            ret++;
+        }
+        return ret;
+    }
+
+    public void swap(int[] row, int[] indexMap, int index, int indexp2) {
+        int temp = row[index];
+        row[index] = row[indexp2];
+        row[indexp2] = temp;
+        indexMap[row[index]] = indexp2;
+        indexMap[row[indexp2]] = index;
+    }
+
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给定一个 没有重复 数字的序列，返回其所有可能的全排列。
+     * <p>
+     * 回溯, 深度优先遍历
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> returnList = new ArrayList<>();
+        ArrayDeque<Integer> arrayQueue = new ArrayDeque<>(nums.length);
+        boolean[] used = new boolean[nums.length];
+        backRound(nums.length, returnList, arrayQueue, nums, used, 0);
+        return returnList;
+
+    }
+
+    public void backRound(int high, List<List<Integer>> returnList, ArrayDeque<Integer> arrayQueue, int[] nums, boolean[] used, int n) {
+        if (high == n) {
+            returnList.add(new ArrayList<>(arrayQueue));
+            return;
+        }
+        for (int i = 0; i < high; i++) {
+            if (!used[i]) {
+                arrayQueue.addLast(nums[i]);
+                used[i] = true;
+                System.out.println("递归之前:" + arrayQueue + ",标记变量:" + Arrays.asList(used));
+                backRound(high, returnList, arrayQueue, nums, used, n + 1);
+                System.out.println("递归之后:" + arrayQueue + ",标记变量:" + Arrays.asList(used));
+                used[i] = false;
+                arrayQueue.pollLast();
+            }
+        }
+    }
+
+    /**
+     * 解法2：
+     * 广度优先遍历
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute2(int[] nums) {
+        List<List<Integer>> returnList = new ArrayList<>();
+        if (nums.length < 2) {
+            List<Integer> integers = Arrays.stream(nums).boxed().collect(Collectors.toList());
+            returnList.add(integers);
+            return returnList;
+        }
+        Deque<List<Integer>> queue = new ArrayDeque<>();
+        for (int i = 0; i < nums.length; i++) {
+            List<Integer> objects = new ArrayList<>();
+            objects.add(nums[i]);
+            queue.addLast(objects);
+            while (!queue.isEmpty()) {
+                List<Integer> integers = queue.pollFirst();
+                for (int j = 0; j < nums.length; j++) {
+                    if (!integers.contains(nums[j])) {
+                        ArrayList<Integer> newInteger = new ArrayList<>(integers);
+                        newInteger.add(nums[j]);
+                        if (newInteger.size() == nums.length) {
+                            returnList.add(newInteger);
+                            break;
+                        }
+                        queue.addLast(newInteger);
+                    }
+                }
+            }
+        }
+        return returnList;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给定长度为 2n 的整数数组 nums ，你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), ..., (an, bn) ，使得从 1 到 n 的 min(ai, bi) 总和最大。
+     * <p>
+     * 返回该 最大总和 。
+     * <p>
+     * 解法一：
+     *
+     * @param nums
+     * @return
+     */
+    public int arrayPairSum(int[] nums) {
+        //取巧，顺序排序时，min最大
+        List<Integer> array = Arrays.stream(nums).boxed().sorted().collect(Collectors.toList());
+        int returnSum = 0;
+        for (int i = 0; i < array.size(); i += 2) {
+            int max = Math.min(array.get(i), array.get(i + 1));
+            returnSum += max;
+        }
+        return returnSum;
+    }
+
+    /**
+     * 优化
+     *
+     * @param nums
+     * @return
+     */
+    public int arrayPairSum1(int[] nums) {
+        Arrays.sort(nums);
+        int returnSum = 0;
+        for (int i = 0; i < nums.length; i += 2) {
+            returnSum += nums[i];
+        }
+        return returnSum;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> returnList = new ArrayList<>();
+        Deque<Integer> deque = new ArrayDeque<>();
+
+        boolean[] used = new boolean[nums.length];
+
+        dfs1(nums, deque, returnList, used, 0);
+        return returnList;
+    }
+
+    public void dfs1(int[] nums, Deque<Integer> deque, List<List<Integer>> returnList, boolean[] used, int depth) {
+        if (depth == nums.length) {
+            returnList.add(new ArrayList<>(deque));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])) {
+                continue;
+            }
+            deque.addLast(nums[i]);
+            used[i] = true;
+            dfs1(nums, deque, returnList, used, depth + 1);
+            deque.pollLast();
+            used[i] = false;
+
+        }
+    }
+
+    /**
+     * 在仅包含 0 和 1 的数组 A 中，一次 K 位翻转包括选择一个长度为 K 的（连续）子数组，同时将子数组中的每个 0 更改为 1，而每个 1 更改为 0。
+     * <p>
+     * 返回所需的 K 位翻转的最小次数，以便数组没有值为 0 的元素。如果不可能，返回 -1。
+     * <p>
+     * 输入：A = [0,1,0], K = 1
+     * 输出：2
+     * 输入：A = [1,1,0], K = 2
+     * 输出：-1
+     * <p>
+     * 如果长度为K，翻转的子数组为f[k],翻转的起始下标为i。
+     *
+     * @param A
+     * @param K
+     * @return
+     */
+    public int minKBitFlips(int[] A, int K) {
+        //如果0的个数 < k,则无法翻转
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int num : A) {
+            deque.addLast(num);
+        }
+        int returnVal = 0;
+        while (!deque.isEmpty()) {
+            if (deque.poll() == 0) {
+                if (deque.size() >= (K - 1)) {
+                    //触发翻转
+                    Deque<Integer> dequeArray = new ArrayDeque<>();
+                    dequeArray.addLast(1);
+                    for (int j = 1; j < K; j++) {
+                        if (deque.poll() == 0) {
+                            dequeArray.addLast(1);
+                        } else {
+                            dequeArray.addLast(0);
+                        }
+                    }
+                    dequeArray.addAll(deque);
+                    deque = dequeArray;
+                    returnVal++;
+                    continue;
+                } else {
+                    returnVal = -1;
+                }
+            }
+        }
+        return returnVal;
+    }
+
+    /**
+     * 滑动窗口解答
+     *
+     * @param A
+     * @param K
+     * @return
+     */
+    public int minKBitFlips2(int[] A, int K) {
+        int res = 0;
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int i = 0; i < A.length; i++) {
+            if (!deque.isEmpty() && deque.getFirst() + K <= i) {
+                deque.pollFirst();
+            }
+            if (deque.size() % 2 == A[i]) {
+                if (i + K > A.length) {
+                    return -1;
+                }
+                //此时当前A为0
+                deque.addLast(i);
+                res++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 滑动窗口解答2,采用标记法
+     *
+     * @param A
+     * @param K
+     * @return
+     */
+    public int minKBitFlips3(int[] A, int K) {
+        int res = 0, recover = 0;
+        for (int i = 0; i < A.length; i++) {
+            if (i >= K && A[i - K] > 1) {
+                recover ^= 1; //已过一次翻转点，减少一次翻转
+                A[i - K] -= 2;
+            }
+            if (recover == A[i]) {//表明此时该点的数为0，需要翻转
+                if (i + K > A.length) {
+                    return -1;
+                }
+                res++;
+                recover ^= 1; //翻转一次，recover值就会变化
+                A[i] += 2;
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
-//        System.out.println(new LeetCodeSolution().myAtoi1("  -42"));
-        System.out.println(-1 * Integer.MIN_VALUE);
+        int[] i = {0, 1, 0, 1, 0, 1, 1, 0};
+        int K = 3;
+        System.out.println(new LeetCodeSolution().minKBitFlips3(i, 3));
+
     }
 }
