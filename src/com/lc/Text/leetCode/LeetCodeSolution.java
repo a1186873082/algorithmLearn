@@ -2498,10 +2498,220 @@ public class LeetCodeSolution {
         return res;
     }
 
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给定一个由若干 0 和 1 组成的数组 A，我们最多可以将 K 个值从 0 变成 1 。
+     * <p>
+     * 返回仅包含 1 的最长（连续）子数组的长度。
+     * <p>
+     * 使用滑动窗口解答
+     *
+     * @param A
+     * @param K
+     * @return
+     */
+    public int longestOnes(int[] A, int K) {
+        int returnSize = 0, lsum = 0, rsum = 0, left = 0;
+        for (int right = 0; right < A.length; right++) {
+            rsum += 1 - A[right];
+            while (rsum - lsum > K) {
+                lsum += 1 - A[left];
+                left++;
+            }
+            returnSize = Math.max(returnSize, right - left + 1);
+        }
+        return returnSize;
+    }
+
+    /**
+     * =================================================================================================================
+     * 给定一个二进制数组， 计算其中最大连续 1 的个数。
+     *
+     * @param
+     */
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int sum = 0, ret = 0;
+        for (int num : nums) {
+            if ((1 & num) == 1) {
+                sum++;
+            } else {
+                sum = 0;
+            }
+            ret = Math.max(ret, sum);
+        }
+        return ret;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给定一个二进制数组，你可以最多将 1 个 0 翻转为 1，找出其中最大连续 1 的个数。
+     * <p>
+     * 滑动窗口
+     *
+     * @param nums
+     * @return
+     */
+    public int findMaxConsecutiveOnes1(int[] nums) {
+        int ret = 0, rsum = 0, lsum = 0, left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            rsum += 1 - nums[right];
+            if (rsum - lsum > 1) {
+                lsum += 1 - nums[left];
+                left++;
+            }
+            ret = Math.max(right - left + 1, ret);
+        }
+        return ret;
+    }
+
+    /**
+     * =================================================================================================================
+     * 给你一个仅由大写英文字母组成的字符串，你可以将任意位置上的字符替换成另外的字符，总共可最多替换 k 次。在执行上述操作后，找到包含重复字母的最长子串的长度。
+     * <p>
+     * 注意：字符串长度 和 k 不会超过 104。
+     * <p>
+     * 解法：滑动窗口解答
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int characterReplacement(String s, int k) {
+        int ret = 0, max = 0, change = 0, left = 0;
+        int[] num = new int[26];
+        char[] chars = s.toCharArray();
+        for (int right = 0; right < chars.length; right++) {
+            num[chars[right] - 'A']++;
+            max = Math.max(max, num[chars[right] - 'A']);
+            if (right - left + 1 - max > k) {
+                num[chars[left] - 'A']--;
+                left++;
+            } else {
+                ret = Math.max(right - left + 1, ret);
+            }
+        }
+        return ret;
+    }
+
+    public int characterReplacement1(String s, int k) {
+        int ret = 0, max = 0, change = 0, left = 0, right = 0;
+        int[] num = new int[26];
+        char[] chars = s.toCharArray();
+        for (right = 0; right < chars.length; right++) {
+            num[chars[right] - 'A']++;
+            max = Math.max(max, num[chars[right] - 'A']);
+            if (right - left + 1 - max > k) {
+                num[chars[left] - 'A']--;
+                left++;
+            }
+        }
+        return right - left;
+    }
+
+    /**
+     * =================================================================================================================
+     * 给定一个非空且只包含非负数的整数数组 nums，数组的度的定义是指数组里任一元素出现频数的最大值。
+     * <p>
+     * 你的任务是在 nums 中找到与 nums 拥有相同大小的度的最短连续子数组，返回其长度。
+     * <p>
+     * 1.找出数据中最大频数
+     * <p>
+     * 2.相同频数最短子数组
+     *
+     * @param nums
+     * @return
+     */
+    public int findShortestSubArray(int[] nums) {
+        int max = commonMaxRes(nums);
+        int[] angle = new int[50000];
+        int max2 = 0;
+        int min = 50000;
+        for (int right = 0; right < nums.length; right++) {
+            int left = 0;
+            angle[nums[right]]++;
+            max2 = Math.max(max2, angle[nums[right]]);
+            while (max2 >= max) {
+                if (nums[left] == nums[right]) {
+                    max2--;
+                    min = Math.min(min, right - left + 1);
+                }
+                left++;
+            }
+        }
+        return min;
+    }
+
+    /**
+     * 优化
+     *
+     * @param nums
+     * @return
+     */
+    public int findShortestSubArray1(int[] nums) {
+        int max = commonMaxRes(nums);
+        int[] angle = new int[50000];
+        int max2 = 0;
+        int min = 50000;
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            angle[nums[right]]++;
+            while (angle[nums[right]] == max) {
+                min = Math.min(min, right - left + 1);
+                angle[nums[left]]--;
+                left++;
+            }
+        }
+        return min;
+    }
+
+    /**
+     * 暴力解法
+     *
+     * @param nums
+     * @return
+     */
+    public int findShortestSubArray2(int[] nums) {
+        Map<Integer, int[]> map = new HashMap<>();
+        for (int right = 0; right < nums.length; right++) {
+            if (map.containsKey(nums[right])) {
+                int[] integers = map.get(nums[right]);
+                integers[0]++;
+                integers[2] = right;
+            } else {
+                int[] integers = {1, right, right};
+                map.put(nums[right], integers);
+            }
+        }
+        int max = 0, min = nums.length;
+        for (Map.Entry<Integer, int[]> integerEntry : map.entrySet()) {
+            int[] value = integerEntry.getValue();
+            if (max < value[0]) {
+                max = value[0];
+                min = value[2] - value[1] + 1;
+            } else if (max == value[0]) {
+                if (min > value[2] - value[1] + 1) {
+                    min = value[2] - value[1] + 1;
+                }
+            }
+        }
+        return min;
+    }
+
+    public int commonMaxRes(int[] nums) {
+        int[] angle = new int[50000];
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            angle[nums[i]]++;
+            max = Math.max(max, angle[nums[i]]);
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
-        int[] i = {0, 1, 0, 1, 0, 1, 1, 0};
-        int K = 3;
-        System.out.println(new LeetCodeSolution().minKBitFlips3(i, 3));
+        int[] i = {1, 2, 2, 3, 1, 4, 2, 1};
+        System.out.println(new LeetCodeSolution().findShortestSubArray1(i));
 
     }
 }
