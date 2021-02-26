@@ -2709,9 +2709,320 @@ public class LeetCodeSolution {
         return max;
     }
 
-    public static void main(String[] args) {
-        int[] i = {1, 2, 2, 3, 1, 4, 2, 1};
-        System.out.println(new LeetCodeSolution().findShortestSubArray1(i));
+    /**
+     * 给你一个 m x n 的矩阵 matrix 。如果这个矩阵是托普利茨矩阵，返回 true ；否则，返回 false 。
+     * <p>
+     * 如果矩阵上每一条由左上到右下的对角线上的元素都相同，那么这个矩阵是 托普利茨矩阵 。
+     * <p>
+     * 满足该矩阵，必须从左下开始，到右上结束，对角线的值都相等
+     *
+     * @param matrix
+     * @return
+     */
+    public boolean isToeplitzMatrix(int[][] matrix) {
+        int resource = -1;
+        for (int i = 0; i < matrix.length; i++) {
+            int j = 0, ireplace = i;
+            while (ireplace < matrix.length && j < matrix[0].length) {
+                if (j == 0) {
+                    resource = matrix[ireplace][j];
+                } else {
+                    if (resource != matrix[ireplace][j]) {
+                        return false;
+                    }
+                }
+                j++;
+                ireplace++;
+            }
+        }
+        for (int j = 1; j < matrix[0].length; j++) {
+            int i = 0, jreplace = j;
+            while (i < matrix.length && jreplace < matrix[0].length) {
+                if (i == 0) {
+                    resource = matrix[i][jreplace];
+                } else {
+                    if (resource != matrix[i][jreplace]) {
+                        return false;
+                    }
+                }
+                i++;
+                jreplace++;
+            }
+        }
+        return true;
+    }
 
+    /**
+     * =================================================================================================================
+     * 今天，书店老板有一家店打算试营业 customers.length 分钟。每分钟都有一些顾客（customers[i]）会进入书店，所有这些顾客都会在那一分钟结束后离开。
+     * <p>
+     * 在某些时候，书店老板会生气。 如果书店老板在第 i 分钟生气，那么 grumpy[i] = 1，否则 grumpy[i] = 0。 当书店老板生气时，那一分钟的顾客就会不满意，不生气则他们是满意的。
+     * <p>
+     * 书店老板知道一个秘密技巧，能抑制自己的情绪，可以让自己连续 X 分钟不生气，但却只能使用一次。
+     * <p>
+     * 请你返回这一天营业下来，最多有多少客户能够感到满意的数量。
+     *
+     * @param customers
+     * @param grumpy
+     * @param X
+     * @return
+     */
+    public int maxSatisfied(int[] customers, int[] grumpy, int X) {
+        //1. 找到X分钟内失望最多的客户数，
+        //滑动窗口
+        int right = 0, left = 0;
+        int angular = 0, maxAngular = 0, res = 0;
+        for (right = 0; right < customers.length; right++) {
+            res += (customers[right] * (1 ^ grumpy[right]));
+            angular += (customers[right] * (0 ^ grumpy[right]));
+
+            if (right - left + 1 > X) {
+                angular -= (customers[left] * (0 ^ grumpy[left]));
+                left++;
+            }
+            if (maxAngular < angular) {
+                maxAngular = angular;
+            }
+        }
+        return res + maxAngular;
+
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给定一个二进制矩阵 A，我们想先水平翻转图像，然后反转图像并返回结果。
+     * <p>
+     * 水平翻转图片就是将图片的每一行都进行翻转，即逆序。例如，水平翻转 [1, 1, 0] 的结果是 [0, 1, 1]。
+     * <p>
+     * 反转图片的意思是图片中的 0 全部被 1 替换， 1 全部被 0 替换。例如，反转 [0, 1, 1] 的结果是 [1, 0, 0]。
+     *
+     * @param A
+     */
+    public int[][] flipAndInvertImage(int[][] A) {
+        int[][] returnVal = new int[A.length][A[0].length];
+        for (int i = 0; i < A.length; i++) {
+            int k = 0;
+            for (int j = A[0].length - 1; j >= 0; j--) {
+                returnVal[i][k] = (1 - A[i][j]);
+                k++;
+            }
+        }
+        return returnVal;
+    }
+
+    /**
+     * 解法二，如果非相等的情况，水平翻转和翻转图片后，值没有变化
+     *
+     * @param A
+     * @return
+     */
+    public int[][] flipAndInvertImage1(int[][] A) {
+        for (int i = 0; i < A.length - 1; i++) {
+            int left = 0, right = A[0].length - 1;
+            while (left < right) {
+                if (A[i][left] == A[i][right]) {
+                    A[i][left] ^= 1;
+                    A[i][right] ^= 1;
+                }
+                left++;
+                right--;
+            }
+            if (left == right) {
+                A[i][left] ^= 1;
+            }
+        }
+        return A;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给你一个二维整数数组 matrix， 返回 matrix 的 转置矩阵 。
+     * <p>
+     * 矩阵的 转置 是指将矩阵的主对角线翻转，交换矩阵的行索引与列索引。
+     *
+     * @param matrix
+     * @return
+     */
+    public int[][] transpose(int[][] matrix) {
+        int[][] returnValue = new int[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                returnValue[j][i] = matrix[i][j];
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 外国友人仿照中国字谜设计了一个英文版猜字谜小游戏，请你来猜猜看吧。
+     * <p>
+     * 字谜的迷面 puzzle 按字符串形式给出，如果一个单词 word 符合下面两个条件，那么它就可以算作谜底：
+     * <p>
+     * 单词 word 中包含谜面 puzzle 的第一个字母。
+     * 单词 word 中的每一个字母都可以在谜面 puzzle 中找到。
+     * 例如，如果字谜的谜面是 "abcdefg"，那么可以作为谜底的单词有 "faced", "cabbage", 和 "baggage"；而 "beefed"（不含字母 "a"）以及 "based"（其中的 "s" 没有出现在谜面中）。
+     * 返回一个答案数组 answer，数组中的每个元素 answer[i] 是在给出的单词列表 words 中可以作为字谜迷面 puzzles[i] 所对应的谜底的单词数目
+     * <p>
+     * //二进制压缩法
+     *
+     * @param words
+     * @param puzzles
+     * @return
+     */
+    public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
+        List<Integer> answerList = new ArrayList<>();
+        Map<Integer, Integer> mapWord = new HashMap<>();
+        for (String word : words) {
+            int mark = 0;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                mark |= (1 << (c - 'a'));
+            }
+            if (Integer.bitCount(mark) <= 7) {
+                mapWord.put(mark, mapWord.getOrDefault(mark, 0) + 1);
+            }
+        }
+
+        for (String puzzle : puzzles) {
+            int answer = 0;
+            //首字母必须存在，首字母为1
+            char[] chars = puzzle.toCharArray();
+            for (int i = 0; i < (1 << (chars.length - 1)); i++) {
+                int mark = 0;
+                for (int j = 0; j < (chars.length - 1); j++) {
+                    if ((i & (1 << j)) != 0) {
+                        mark |= (1 << (puzzle.charAt(j + 1) - 'a'));
+                    }
+                }
+                mark |= 1 << (puzzle.charAt(0) - 'a');
+                if (mapWord.containsKey(mark)) {
+                    answer += mapWord.get(mark);
+                }
+            }
+            answerList.add(answer);
+        }
+        return answerList;
+    }
+
+
+    public List<Integer> findNumOfValidWords1(String[] words, String[] puzzles) {
+        List<Integer> answerList = new ArrayList<>();
+        Map<Integer, Integer> mapWord = new HashMap<>();
+        for (String word : words) {
+            int mark = 0;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                mark |= (1 << (c - 'a'));
+            }
+            if (Integer.bitCount(mark) <= 7) {
+                mapWord.put(mark, mapWord.getOrDefault(mark, 0) + 1);
+            }
+        }
+
+        for (String puzzle : puzzles) {
+            int answer = 0;
+            //首字母必须存在，首字母为1
+            char[] chars = puzzle.toCharArray();
+//            for (int i = 0; i < (1 << (chars.length - 1)); i++) {
+//                int mark = 0;
+//                for (int j = 0; j < (chars.length - 1); j++) {
+//                    if ((i & (1 << j)) != 0) {
+//                        mark |= (1 << (puzzle.charAt(j + 1) - 'a'));
+//                    }
+//                }
+//                mark |= 1 << (puzzle.charAt(0) - 'a');
+//                if (mapWord.containsKey(mark)) {
+//                    answer += mapWord.get(mark);
+//                }
+//            }
+            int mark = 0;
+            for (int i = 1; i < chars.length - 1; i++) {
+                mark |= (1 << (chars[i] - 'a'));
+            }
+            int subset = mark;
+            do {
+                int s = subset | (1 << (chars[0] - 'a'));
+                if (mapWord.containsKey(s)) {
+                    answer += mapWord.get(s);
+                }
+                subset = (subset - 1) & mark;
+            } while (subset != mark);
+            answerList.add(answer);
+        }
+        return answerList;
+    }
+
+    /**
+     * =================================================================================================================
+     * <p>
+     * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+     * <p>
+     * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> returnList = new ArrayList<>();
+        for (int i = 0; i < (1 << nums.length); i++) {
+            List<Integer> list = new ArrayList<>();
+            for (int j = 0; j < nums.length; j++) {
+                if ((i & (1 << j)) != 0) {
+                    list.add(nums[j]);
+                }
+            }
+            returnList.add(list);
+        }
+        return returnList;
+    }
+
+    public static void main(String[] args) {
+//        String[] customers = {"apple","pleas","please"};
+//        String[] grumpy = {"aelwxyz","aelpxyz","aelpsxy","saelpxy","xaelpsy"};
+//        System.out.println(new LeetCodeSolution().findNumOfValidWords(customers, grumpy));
+//        System.out.println(getPastDate(90, new Date(1614099600000L)));
+        int[] nums = {0};
+        System.out.println(new LeetCodeSolution().subsets(nums));
+
+//        char[] chars = "abcef".toCharArray();
+//        for (int i = 0; i < (1 << (chars.length - 1)); i++) {
+//            int mark = 0;
+//            for (int j = 0; j < (chars.length - 1); j++) {
+//                if ((i & (1 << j)) != 0) {
+//                    mark |= (1 << (chars[j + 1] - 'a'));
+//                }
+//            }
+//            mark |= 1 << (chars[0] - 'a');
+//            System.out.println(mark);
+//        }
+//        char[] chars = "aabbcef".toCharArray();
+//        int mark = 0;
+//        for (int i = 1; i < chars.length; i++) {
+//            mark |= (1 << (chars[i] - 'a'));
+//        }
+//        int subset = mark;
+//        do {
+//            int s = subset | (1 << chars[0] - 'a');
+//            System.out.println(s);
+//            subset = (subset - 1) & mark;
+//        } while (subset != mark);
+
+    }
+
+    public static Date getPastDate(int past, Date fromDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fromDate);
+
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
     }
 }
