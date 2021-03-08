@@ -2980,37 +2980,122 @@ public class LeetCodeSolution {
         return returnList;
     }
 
+    /**
+     * 实现 pow(x, n) ，即计算 x 的 n 次幂函数（即，xn）。
+     * <p>
+     * 找出最大基准数
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow3(double x, long n) {
+        double ans = 1.0;
+        double p = x;
+        boolean rever = true;
+        long n1 = n;
+        if (n < 0) {
+            n1 = (long) -n;
+            rever = false;
+        }
+        while (n1 > 0) {
+            if (n1 % 2 == 1) {
+                ans *= p;
+            }
+            p *= p;
+            n1 /= 2;
+        }
+        return rever ? ans : 1 / ans;
+    }
+
+    public double myPow4(double x, int n) {
+        long N = n;
+        return N > 0 ? myPow1(x, N) : myPow1(x, -N);
+    }
+
+    /**
+     * =================================================================================================================
+     * 给定一个非负整数 num。对于 0 ≤ i ≤ num 范围中的每个数字 i ，计算其二进制数中的 1 的数目并将它们作为数组返回。
+     * <p>
+     * 示例 1:
+     *
+     * @param num
+     * @return
+     */
+    public int[] countBits(int num) {
+        int[] returnSum = new int[num];
+        for (int i = 0; i < num; i++) {
+            returnSum[i] = countOne(num);
+        }
+        return returnSum;
+    }
+
+    public int countOne(int num) {
+        int count = 0;
+        while (num > 0) {
+            num &= (num - 1);
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * 解法二：
+     * 最高有效位
+     *
+     * @param num
+     * @return
+     */
+    public int[] countBits1(int num) {
+        int[] returnSum = new int[num + 1];
+        int highInt = 0;
+        for (int i = 0; i <= num; i++) {
+            if ((i & (i - 1)) == 0) {
+                highInt = i;
+            }
+            returnSum[i] = returnSum[i - highInt] + 1;
+        }
+        return returnSum;
+    }
+
+    /**
+     * 分割回文串
+     * 给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是回文。
+     * <p>
+     * 返回符合要求的 最少分割次数 。
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        int n = s.length();
+        boolean[][] g = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(g[i], true); //默认赋值为true
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                g[i][j] = g[i + 1][j - 1] && s.charAt(i) == s.charAt(j); //判断从i到j得子串是否是回文子串
+            }
+        }
+        int[] f = new int[n];
+        Arrays.fill(f, Integer.MAX_VALUE);
+        for (int i = 0; i < n; i++) {
+            if (g[0][i]) {
+                f[i] = 0;
+            } else {
+                for (int j = 0; j < i; j++) {
+                    if (g[j + 1][i]) {
+                        f[i] = Math.min(f[i], f[j] + 1);
+                    }
+                }
+            }
+        }
+        return f[n - 1];
+    }
+
     public static void main(String[] args) {
-//        String[] customers = {"apple","pleas","please"};
-//        String[] grumpy = {"aelwxyz","aelpxyz","aelpsxy","saelpxy","xaelpsy"};
-//        System.out.println(new LeetCodeSolution().findNumOfValidWords(customers, grumpy));
-//        System.out.println(getPastDate(90, new Date(1614099600000L)));
-        int[] nums = {0};
-        System.out.println(new LeetCodeSolution().subsets(nums));
-
-//        char[] chars = "abcef".toCharArray();
-//        for (int i = 0; i < (1 << (chars.length - 1)); i++) {
-//            int mark = 0;
-//            for (int j = 0; j < (chars.length - 1); j++) {
-//                if ((i & (1 << j)) != 0) {
-//                    mark |= (1 << (chars[j + 1] - 'a'));
-//                }
-//            }
-//            mark |= 1 << (chars[0] - 'a');
-//            System.out.println(mark);
-//        }
-//        char[] chars = "aabbcef".toCharArray();
-//        int mark = 0;
-//        for (int i = 1; i < chars.length; i++) {
-//            mark |= (1 << (chars[i] - 'a'));
-//        }
-//        int subset = mark;
-//        do {
-//            int s = subset | (1 << chars[0] - 'a');
-//            System.out.println(s);
-//            subset = (subset - 1) & mark;
-//        } while (subset != mark);
-
+        System.out.println(new LeetCodeSolution().minCut("aab"));
     }
 
     public static Date getPastDate(int past, Date fromDate) {
