@@ -3094,8 +3094,59 @@ public class LeetCodeSolution {
         return f[n - 1];
     }
 
+    /**
+     * =================================================================================================================
+     * 给出由小写字母组成的字符串 S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。
+     * <p>
+     * 在 S 上反复执行重复项删除操作，直到无法继续删除。
+     * <p>
+     * 在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。
+     *
+     * @param S
+     * @return
+     */
+    public String removeDuplicates(String S) {
+        StringBuffer stack = new StringBuffer();
+        int top = -1;
+        for (int i = 0; i < S.length(); i++) {
+            if (stack.length() == 0 || S.charAt(i) != stack.charAt(top)) {
+                stack.append(S.charAt(i));
+                top++;
+            } else {
+                stack.deleteCharAt(top);
+                top--;
+            }
+        }
+        return stack.toString();
+    }
+
+    /**
+     * 给你一个正整数 n ，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix 。
+     *
+     * @param n
+     * @return
+     */
+    public int[][] generateMatrix(int n) {
+        int[][] matrix = new int[n][n];
+        int row = 0, colum = 0;
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int directionIndex = 0;
+        int i = 1;
+        while (i <= n * n) {
+            matrix[row][colum] = i;
+            i++;
+            int nextRow = row + directions[directionIndex][0], nextColum = colum + directions[directionIndex][1];
+            if (nextRow < 0 || nextRow >= n || nextColum < 0 || nextColum >= n || matrix[nextRow][nextColum] != 0) {
+                directionIndex = (directionIndex + 1) % 4;
+            }
+            row = row + directions[directionIndex][0];
+            colum = colum + directions[directionIndex][1];
+        }
+        return matrix;
+    }
+
     public static void main(String[] args) {
-        System.out.println(new LeetCodeSolution().minCut("aab"));
+        System.out.println(new LeetCodeSolution().removeDuplicates("abbaca"));
     }
 
     public static Date getPastDate(int past, Date fromDate) {

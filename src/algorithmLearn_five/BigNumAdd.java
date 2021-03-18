@@ -77,7 +77,7 @@ public class BigNumAdd {
         for (int i = maxLength - 1, j = 0; i >= 0; i--, j++) {
             int newNum = newFirstChar[i] - '0' + newSecondChar[i] - '0';
             //代表大于10，需要进位
-            if (newNum > 10) {
+            if (newNum + model >= 10) {
                 result[j] = newNum + model - 10;
                 model = 1;
             } else {

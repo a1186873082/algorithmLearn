@@ -89,7 +89,7 @@ public class RemoveDigist {
     }
 
     public static void main(String[] args) {
-        int[] a = {1, 0, 0, 1, 0, 1, 2, 1};
-        new RemoveDigist().removeDigit(a, 1);
+        int[] a = {1, 2, 3, 4, 5, 1, 2, 1};
+        new RemoveDigist().removeDigit(a, 2);
     }
 }
