@@ -3145,8 +3145,46 @@ public class LeetCodeSolution {
         return matrix;
     }
 
+    /**
+     * 给你一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置。
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if(k == 0|| head == null || head.next == null){
+            return head;
+        }
+        ListNode head1 = head;
+        int count = 1;
+        while (head.next != null) {
+            head = head.next;
+            count++;
+        }
+        int add = count - k % count;
+        if (add == count) {
+            return head1;
+        }
+        head.next = head1;
+        while(--add > 0){
+            head1 = head1.next;
+        }
+        ListNode ret = head1.next;
+        head1.next = null;
+        return ret;
+    }
+
     public static void main(String[] args) {
-        System.out.println(new LeetCodeSolution().removeDuplicates("abbaca"));
+//        ListNode head = new LeetCodeSolution().new ListNode(1);
+//        ListNode head1 = head;
+//
+//        for (int i = 2; i <= 5; i++) {
+//            head.next = new LeetCodeSolution().new ListNode(i);
+//            head = head.next;
+//        }
+//        System.out.println(new LeetCodeSolution().rotateRight(head1, 2));
+        String string = new String("123");
     }
 
     public static Date getPastDate(int past, Date fromDate) {
@@ -3158,6 +3196,7 @@ public class LeetCodeSolution {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+
 
         return calendar.getTime();
     }
