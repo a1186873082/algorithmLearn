@@ -1,17 +1,14 @@
 package com.lc.Text.leetCode;
 
-/**
- * 前缀树
- */
 public class Trie {
-    public static class TrieNode {
-        private boolean isLeaf;
-        private TrieNode[] children;
-        private char val;
+    class TrieNode {
+        public boolean isLeaf;
+        public TrieNode[] children;
+        public char val;
 
         public TrieNode() {
             this.isLeaf = false;
-            children = new TrieNode[26];
+            this.children = new TrieNode[26];
         }
     }
 
@@ -21,40 +18,55 @@ public class Trie {
         root = new TrieNode();
     }
 
-    public void insert(String word) {
-        TrieNode cur = root;
-        for (char c : word.toCharArray()) {
+    public void insert(String str) {
+        TrieNode trieNode = root;
+        for (char c : str.toCharArray()) {
             int idx = c - 'a';
-            if (cur.children[idx] == null) {
-                cur.children[idx] = new TrieNode();
-                cur.children[idx].val = c;
+            if(trieNode.children[idx] == null) {
+                trieNode.children[idx] = new TrieNode();
+                trieNode.children[idx].val = c;
             }
-            cur = cur.children[idx];
+            trieNode = trieNode.children[idx];
         }
-        cur.isLeaf = true;
+        trieNode.isLeaf = true;
     }
 
-    public boolean search(String word) {
-        TrieNode cur = root;
-        for (char c : word.toCharArray()) {
+    public boolean search(String str) {
+        TrieNode trieNode = root;
+        for (char c : str.toCharArray()) {
             int idx = c - 'a';
-            if (cur.children[idx] == null) {
+            if (trieNode.children[idx] == null) {
                 return false;
             }
-            cur = cur.children[idx];
-        }
-        return cur.isLeaf == true;
-    }
-
-    public boolean startsWith(String word) {
-        TrieNode cur = root;
-        for (char c : word.toCharArray()) {
-            int idx = c- 'a';
-            if(cur.children[idx] == null){
-                return false;
-            }
-            cur = cur.children[idx];
+            trieNode = trieNode.children[idx];
         }
         return true;
+    }
+
+    public boolean equals(String str) {
+        TrieNode trieNode = root;
+        for (char c : str.toCharArray()) {
+            int idx = c - 'a';
+            if (trieNode.children[idx] == null) {
+                return false;
+            }
+            trieNode = trieNode.children[idx];
+        }
+        return trieNode.isLeaf == true;
+    }
+
+    public static void main(String[] args) {
+        Trie trie = new Trie();
+        trie.insert("potijac");
+//        trie.insert("potij");
+//        trie.insert("potiff");
+//        trie.insert("aotijac");
+//        trie.insert("fffijac");
+        trie.insert("potitt");
+
+
+//        System.out.println(trie.search("123"));
+        System.out.println(trie.equals("potijac"));
+
     }
 }

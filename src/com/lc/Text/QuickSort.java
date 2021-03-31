@@ -89,7 +89,7 @@ public class QuickSort {
             return;
         }
         //去最开始的数为基准数
-        int quite = change1(startIndex, endIndex, a);
+        int quite = change(a[0],startIndex, endIndex, a);
         sortNow(startIndex, quite - 1, a);
         sortNow(quite + 1, endIndex, a);
     }
